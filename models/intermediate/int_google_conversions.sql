@@ -25,13 +25,13 @@ SELECT date
                 kw.keyword_match_type
           ) as conversion_actions_count
 FROM `mavan-analytics.google_ads_v2.keyword_conversions` kws
-LEFT JOIN {{ ref('google_accounts') }} acc
+LEFT JOIN {{ ref('v_stg_google_accounts') }} acc
 on acc.customer_id = kws.customer_id
-LEFT JOIN {{ ref('google_campaigns') }} cam
+LEFT JOIN {{ ref('v_stg_google_campaigns') }} cam
 on cam.campaign_id = kws.campaign_id
-LEFT JOIN {{ ref('google_adgroup') }} adg
+LEFT JOIN {{ ref('v_stg_google_adgroup') }} adg
 on adg.ad_group_id = kws.ad_group_id
-LEFT JOIN {{ ref('google_keyword') }} kw
+LEFT JOIN {{ ref('v_stg_google_keyword') }} kw
 on kw.criterion_id = kws.ad_group_criterion_criterion_id
 GROUP BY 1,2,3,4,5,6,7,8,9,10
 ORDER BY 1 DESC
