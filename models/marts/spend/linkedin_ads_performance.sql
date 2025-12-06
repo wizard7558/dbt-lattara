@@ -17,8 +17,8 @@ select coalesce(s.date, c.date) as date
      , s.leads
      , s.opens
      , s.leadformopens
-from {{ ref('stg_linkedin_spend') }} s
-full outer join {{ ref('stg_linkedin_conversions') }} c
+from {{ ref('v_stg_linkedin_spend') }} s
+full outer join {{ ref('v_stg_linkedin_conversions') }} c
              on s.creativeid = c.creative_id
             and s.date = c.date
             and s.campaignid = c.campaign_id

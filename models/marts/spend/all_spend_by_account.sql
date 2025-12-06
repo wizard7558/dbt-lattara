@@ -19,7 +19,7 @@ select date_day
      , sum(impressions) as Impressions
      , sum(clicks) as Clicks
      , sum(conversions_value) as Revenue
-from `google_ads_v2_google_ads.google_ads__campaign_report`
+from FIVETRAN_DATABASE.GOOGLE_ADS_FM_GOOGLE_ADS.GOOGLE_ADS__CAMPAIGN_REPORT
 group by 1,2,3,4
 union all
 select date

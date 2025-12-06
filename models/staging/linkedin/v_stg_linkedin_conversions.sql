@@ -5,7 +5,7 @@ select cast(day as date) as date
      , conversion_id
      , sum(external_website_conversions) as external_website_conversions
      , sum(conversion_value_in_local_currency) as revenue
-from `linkedin_ads.ad_analytics_by_creative_with_conversion_breakdown`
+from FIVETRAN_DATABASE.LINKEDIN_ADS.AD_ANALYTICS_BY_CREATIVE_WITH_CONVERSION_BREAKDOWN
 where external_website_conversions > 0
 group by 1
        , 2
@@ -20,42 +20,15 @@ select cr.id as creative_id
      , cg.name as campaign_group_name
      , cg.account_id
      , a.name as account_name
-from (
-    select id
-         , campaign_id
-    from `linkedin_ads.creative_history`
-    qualify row_number() over(partition by id order by last_modified_at desc) = 1
-) cr
-left join (
-    select id
-         , name
-         , campaign_group_id
-    from `linkedin_ads.campaign_history`
-    qualify row_number() over(partition by id order by last_modified_time desc) = 1
-) camp
+from {{ ref('v_stg_linkedin_creatives') }} cr
+left join {{ ref('v_stg_linkedin_campaigns') }} camp
        on camp.id = cr.campaign_id
-left join (
-    select id
-         , name
-         , account_id
-    from `linkedin_ads.campaign_group_history`
-    qualify row_number() over(partition by id order by last_modified_time desc) = 1
-) cg
+left join {{ ref('v_stg_linkedin_campaign_groups') }} cg
        on cg.id = camp.campaign_group_id
-left join (
-    select id
-         , name
-    from `linkedin_ads.account_history`
-    qualify row_number() over(partition by id order by last_modified_time desc) = 1
-) a
+left join {{ ref('v_stg_linkedin_accounts') }}a
        on a.id = cg.account_id
-),
-latest_conversion as (
-select id
-     , name
-from `linkedin_ads.conversion_history`
-qualify row_number() over(partition by id order by last_modified desc) = 1
 )
+
 select c.date
      , le.account_id as account_id
      , le.account_name as account
@@ -69,6 +42,6 @@ select c.date
 from campaigns c
 left join latest_entities le
        on le.creative_id = c.creative_id
-left join latest_conversion conv
+left join {{ ref('v_stg_linkedin_conversions') }} conv
        on c.conversion_id = conv.id
 where le.campaign_id_final is not null
