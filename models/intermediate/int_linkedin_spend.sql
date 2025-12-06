@@ -16,6 +16,7 @@ select c.date
      , cg.name as campaigngroup
      , camp.name as campaign
      , camp.id as campaignid
+     , cr.name as creative
      , c.creativeid
      , coalesce(c.cost,0) as cost
      , coalesce(c.impressions,0) as impressions

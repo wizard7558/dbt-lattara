@@ -1,5 +1,4 @@
 select id
          , name
-         , campaign_id
-    from FIVETRAN_DATABASE.LINKEDIN_ADS.CREATIVE_HISTORY
+    from FIVETRAN_DATABASE.LINKEDIN_ADS.CONVERSION_HISTORY
     qualify row_number() over(partition by id order by last_modified_at desc) = 1

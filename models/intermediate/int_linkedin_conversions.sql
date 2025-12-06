@@ -13,6 +13,7 @@ group by 1
 ),
 latest_entities as (
 select cr.id as creative_id
+    , cr.name as creative_name
      , cr.campaign_id
      , camp.name as campaign_name
      , camp.id as campaign_id_final
@@ -35,6 +36,7 @@ select c.date
      , le.campaign_group_name as campaign_group
      , le.campaign_name as campaign
      , le.campaign_id_final as campaign_id
+     , le.creative_name as creative
      , c.creative_id
      , conv.name as conversion
      , c.external_website_conversions
@@ -42,6 +44,6 @@ select c.date
 from campaigns c
 left join latest_entities le
        on le.creative_id = c.creative_id
-left join {{ ref('v_stg_linkedin_conversions') }} conv
+left join {{ ref('v_stg_linkedin_conversion_history') }} conv
        on c.conversion_id = conv.id
 where le.campaign_id_final is not null
