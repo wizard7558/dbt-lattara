@@ -24,7 +24,7 @@ SELECT date
                 kw.keyword_text,
                 kw.keyword_match_type
           ) as conversion_actions_count
-FROM `mavan-analytics.google_ads_v2.keyword_conversions` kws
+FROM FIVETRAN_DATABASE.GOOGLE_ADS_FM.KEYWORD_CONVERSIONS kws
 LEFT JOIN {{ ref('v_stg_google_accounts') }} acc
 on acc.customer_id = kws.customer_id
 LEFT JOIN {{ ref('v_stg_google_campaigns') }} cam
