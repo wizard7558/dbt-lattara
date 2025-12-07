@@ -1,0 +1,178 @@
+# Reference this view as dbt_prod__v_stg_facebook_campaigns
+catalog: DBT
+schema: PROD
+table_name: V_STG_FACEBOOK_CAMPAIGNS
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  updated_time:
+    sql: '"UPDATED_TIME"'
+
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+  source_campaign_id:
+    sql: '"SOURCE_CAMPAIGN_ID"'
+    format: ID
+
+  bid_strategy:
+    sql: '"BID_STRATEGY"'
+
+  boosted_object_id:
+    sql: '"BOOSTED_OBJECT_ID"'
+    format: ID
+
+  budget_rebalance_flag:
+    sql: '"BUDGET_REBALANCE_FLAG"'
+
+  budget_remaining:
+    sql: '"BUDGET_REMAINING"'
+
+  buying_type:
+    sql: '"BUYING_TYPE"'
+
+  can_create_brand_lift_study:
+    sql: '"CAN_CREATE_BRAND_LIFT_STUDY"'
+
+  can_use_spend_cap:
+    sql: '"CAN_USE_SPEND_CAP"'
+
+  configured_status:
+    sql: '"CONFIGURED_STATUS"'
+
+  created_time:
+    sql: '"CREATED_TIME"'
+
+  daily_budget:
+    sql: '"DAILY_BUDGET"'
+
+  effective_status:
+    sql: '"EFFECTIVE_STATUS"'
+
+  is_skadnetwork_attribution:
+    sql: '"IS_SKADNETWORK_ATTRIBUTION"'
+
+  last_budget_toggling_time:
+    sql: '"LAST_BUDGET_TOGGLING_TIME"'
+
+  lifetime_budget:
+    sql: '"LIFETIME_BUDGET"'
+
+  name:
+    sql: '"NAME"'
+
+  objective:
+    sql: '"OBJECTIVE"'
+
+  smart_promotion_type:
+    sql: '"SMART_PROMOTION_TYPE"'
+
+  special_ad_category:
+    sql: '"SPECIAL_AD_CATEGORY"'
+
+  spend_cap:
+    sql: '"SPEND_CAP"'
+
+  start_time:
+    sql: '"START_TIME"'
+
+  status:
+    sql: '"STATUS"'
+
+  stop_time:
+    sql: '"STOP_TIME"'
+
+  topline_id:
+    sql: '"TOPLINE_ID"'
+    format: ID
+
+  pacing_type:
+    sql: '"PACING_TYPE"'
+
+  special_ad_categories:
+    sql: '"SPECIAL_AD_CATEGORIES"'
+
+  special_ad_category_country:
+    sql: '"SPECIAL_AD_CATEGORY_COUNTRY"'
+
+  promoted_object_application_id:
+    sql: '"PROMOTED_OBJECT_APPLICATION_ID"'
+    format: ID
+
+  promoted_object_custom_conversion_id:
+    sql: '"PROMOTED_OBJECT_CUSTOM_CONVERSION_ID"'
+    format: ID
+
+  promoted_object_custom_event_str:
+    sql: '"PROMOTED_OBJECT_CUSTOM_EVENT_STR"'
+
+  promoted_object_custom_event_type:
+    sql: '"PROMOTED_OBJECT_CUSTOM_EVENT_TYPE"'
+
+  promoted_object_event_id:
+    sql: '"PROMOTED_OBJECT_EVENT_ID"'
+    format: ID
+
+  promoted_object_object_store_url:
+    sql: '"PROMOTED_OBJECT_OBJECT_STORE_URL"'
+
+  promoted_object_offer_id:
+    sql: '"PROMOTED_OBJECT_OFFER_ID"'
+    format: ID
+
+  promoted_object_offline_conversion_data_set_id:
+    sql: '"PROMOTED_OBJECT_OFFLINE_CONVERSION_DATA_SET_ID"'
+    format: ID
+
+  promoted_object_page_id:
+    sql: '"PROMOTED_OBJECT_PAGE_ID"'
+    format: ID
+
+  promoted_object_pixel_aggregation_rule:
+    sql: '"PROMOTED_OBJECT_PIXEL_AGGREGATION_RULE"'
+
+  promoted_object_pixel_id:
+    sql: '"PROMOTED_OBJECT_PIXEL_ID"'
+    format: ID
+
+  promoted_object_pixel_rule:
+    sql: '"PROMOTED_OBJECT_PIXEL_RULE"'
+
+  promoted_object_place_page_set_id:
+    sql: '"PROMOTED_OBJECT_PLACE_PAGE_SET_ID"'
+    format: ID
+
+  promoted_object_product_catalog_id:
+    sql: '"PROMOTED_OBJECT_PRODUCT_CATALOG_ID"'
+    format: ID
+
+  promoted_object_product_set_id:
+    sql: '"PROMOTED_OBJECT_PRODUCT_SET_ID"'
+    format: ID
+
+  promoted_object_retention_days:
+    sql: '"PROMOTED_OBJECT_RETENTION_DAYS"'
+
+  _fivetran_synced:
+    sql: '"_FIVETRAN_SYNCED"'
+    hidden: true
+
+measures:
+  count:
+    aggregate_type: count
+
+#The info below was pulled from your dbt repository and is read-only.
+dbt:
+  name: v_stg_facebook_campaigns
+  target_schema: PROD
+  config:
+    materialized: view
+  code: |-
+    SELECT * FROM FIVETRAN_DATABASE.FACEBOOK_ADS.CAMPAIGN_HISTORY
+    QUALIFY ROW_NUMBER() OVER (PARTITION BY ID ORDER BY UPDATED_TIME DESC) = 1
+  referenced_by: [ v_stg_facebook_spend ]

@@ -1,0 +1,35 @@
+# Reference this view as omni_dbt__v_stg_facebook_distinct_actions
+schema_label: ""
+
+schema: omni_dbt
+table_name: V_STG_FACEBOOK_DISTINCT_ACTIONS
+
+dimensions:
+  date:
+    sql: '"DATE"'
+
+  ad_id:
+    sql: '"AD_ID"'
+    format: ID
+
+  cnt:
+    sql: '"CNT"'
+
+measures:
+  count:
+    aggregate_type: count
+
+#The info below was pulled from your dbt repository and is read-only.
+dbt:
+  name: v_stg_facebook_distinct_actions
+  target_schema: PROD
+  config:
+    materialized: view
+  code: |-
+    SELECT DATE
+         , AD_ID
+         , COUNT(DISTINCT CONCAT(DATE, AD_ID, ACTION_TYPE)) AS CNT
+    FROM FIVETRAN_DATABASE.FACEBOOK_ADS.ADS_INSIGHTS_ACTIONS
+    GROUP BY DATE
+         , AD_ID
+  referenced_by: [ int_facebook_conversions ]

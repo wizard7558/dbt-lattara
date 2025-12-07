@@ -1,0 +1,35 @@
+# Reference this view as dbt_prod__v_stg_linkedin_creatives
+catalog: DBT
+schema: PROD
+table_name: V_STG_LINKEDIN_CREATIVES
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  name:
+    sql: '"NAME"'
+
+  campaign_id:
+    sql: '"CAMPAIGN_ID"'
+    format: ID
+
+measures:
+  count:
+    aggregate_type: count
+
+#The info below was pulled from your dbt repository and is read-only.
+dbt:
+  name: v_stg_linkedin_creatives
+  target_schema: PROD
+  config:
+    materialized: view
+  code: |-
+    select id
+             , name
+             , campaign_id
+        from FIVETRAN_DATABASE.LINKEDIN_ADS.CREATIVE_HISTORY
+        qualify row_number() over(partition by id order by last_modified_at desc) = 1
+  referenced_by: [ int_linkedin_spend, int_linkedin_conversions ]

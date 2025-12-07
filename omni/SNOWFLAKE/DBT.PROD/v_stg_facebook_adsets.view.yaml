@@ -1,0 +1,384 @@
+# Reference this view as dbt_prod__v_stg_facebook_adsets
+catalog: DBT
+schema: PROD
+table_name: V_STG_FACEBOOK_ADSETS
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  updated_time:
+    sql: '"UPDATED_TIME"'
+
+  campaign_id:
+    sql: '"CAMPAIGN_ID"'
+    format: ID
+
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+  asset_feed_id:
+    sql: '"ASSET_FEED_ID"'
+    format: ID
+
+  bid_amount:
+    sql: '"BID_AMOUNT"'
+
+  bid_strategy:
+    sql: '"BID_STRATEGY"'
+
+  billing_event:
+    sql: '"BILLING_EVENT"'
+
+  budget_remaining:
+    sql: '"BUDGET_REMAINING"'
+
+  configured_status:
+    sql: '"CONFIGURED_STATUS"'
+
+  created_time:
+    sql: '"CREATED_TIME"'
+
+  daily_budget:
+    sql: '"DAILY_BUDGET"'
+
+  daily_min_spend_target:
+    sql: '"DAILY_MIN_SPEND_TARGET"'
+
+  daily_spend_cap:
+    sql: '"DAILY_SPEND_CAP"'
+
+  destination_type:
+    sql: '"DESTINATION_TYPE"'
+
+  effective_status:
+    sql: '"EFFECTIVE_STATUS"'
+
+  end_time:
+    sql: '"END_TIME"'
+
+  instagram_user_id:
+    sql: '"INSTAGRAM_USER_ID"'
+    format: ID
+
+  is_dynamic_creative:
+    sql: '"IS_DYNAMIC_CREATIVE"'
+
+  lifetime_budget:
+    sql: '"LIFETIME_BUDGET"'
+
+  lifetime_imps:
+    sql: '"LIFETIME_IMPS"'
+
+  lifetime_min_spend_target:
+    sql: '"LIFETIME_MIN_SPEND_TARGET"'
+
+  lifetime_spend_cap:
+    sql: '"LIFETIME_SPEND_CAP"'
+
+  multi_optimization_goal_weight:
+    sql: '"MULTI_OPTIMIZATION_GOAL_WEIGHT"'
+
+  name:
+    sql: '"NAME"'
+
+  optimization_goal:
+    sql: '"OPTIMIZATION_GOAL"'
+
+  optimization_sub_event:
+    sql: '"OPTIMIZATION_SUB_EVENT"'
+
+  recurring_budget_semantics:
+    sql: '"RECURRING_BUDGET_SEMANTICS"'
+
+  review_feedback:
+    sql: '"REVIEW_FEEDBACK"'
+
+  rf_prediction_id:
+    sql: '"RF_PREDICTION_ID"'
+    format: ID
+
+  status:
+    sql: '"STATUS"'
+
+  start_time:
+    sql: '"START_TIME"'
+
+  use_new_app_click:
+    sql: '"USE_NEW_APP_CLICK"'
+
+  promoted_object_application_id:
+    sql: '"PROMOTED_OBJECT_APPLICATION_ID"'
+    format: ID
+
+  promoted_object_custom_conversion_id:
+    sql: '"PROMOTED_OBJECT_CUSTOM_CONVERSION_ID"'
+    format: ID
+
+  promoted_object_custom_event_str:
+    sql: '"PROMOTED_OBJECT_CUSTOM_EVENT_STR"'
+
+  promoted_object_custom_event_type:
+    sql: '"PROMOTED_OBJECT_CUSTOM_EVENT_TYPE"'
+
+  promoted_object_event_id:
+    sql: '"PROMOTED_OBJECT_EVENT_ID"'
+    format: ID
+
+  promoted_object_object_store_url:
+    sql: '"PROMOTED_OBJECT_OBJECT_STORE_URL"'
+
+  promoted_object_offer_id:
+    sql: '"PROMOTED_OBJECT_OFFER_ID"'
+    format: ID
+
+  promoted_object_offline_conversion_data_set_id:
+    sql: '"PROMOTED_OBJECT_OFFLINE_CONVERSION_DATA_SET_ID"'
+    format: ID
+
+  promoted_object_page_id:
+    sql: '"PROMOTED_OBJECT_PAGE_ID"'
+    format: ID
+
+  promoted_object_pixel_aggregation_rule:
+    sql: '"PROMOTED_OBJECT_PIXEL_AGGREGATION_RULE"'
+
+  promoted_object_pixel_id:
+    sql: '"PROMOTED_OBJECT_PIXEL_ID"'
+    format: ID
+
+  promoted_object_pixel_rule:
+    sql: '"PROMOTED_OBJECT_PIXEL_RULE"'
+
+  promoted_object_place_page_set_id:
+    sql: '"PROMOTED_OBJECT_PLACE_PAGE_SET_ID"'
+    format: ID
+
+  promoted_object_product_catalog_id:
+    sql: '"PROMOTED_OBJECT_PRODUCT_CATALOG_ID"'
+    format: ID
+
+  promoted_object_product_set_id:
+    sql: '"PROMOTED_OBJECT_PRODUCT_SET_ID"'
+    format: ID
+
+  promoted_object_retention_days:
+    sql: '"PROMOTED_OBJECT_RETENTION_DAYS"'
+
+  learning_stage_info_attribution_windows:
+    sql: '"LEARNING_STAGE_INFO_ATTRIBUTION_WINDOWS"'
+
+  learning_stage_info_conversions:
+    sql: '"LEARNING_STAGE_INFO_CONVERSIONS"'
+
+  learning_stage_info_last_sig_edit_ts:
+    sql: '"LEARNING_STAGE_INFO_LAST_SIG_EDIT_TS"'
+
+  learning_stage_info_status:
+    sql: '"LEARNING_STAGE_INFO_STATUS"'
+
+  targeting_app_install_state:
+    sql: '"TARGETING_APP_INSTALL_STATE"'
+
+  targeting_age_max:
+    sql: '"TARGETING_AGE_MAX"'
+
+  targeting_age_min:
+    sql: '"TARGETING_AGE_MIN"'
+
+  targeting_genders:
+    sql: '"TARGETING_GENDERS"'
+
+  targeting_behaviors:
+    sql: '"TARGETING_BEHAVIORS"'
+
+  targeting_interests:
+    sql: '"TARGETING_INTERESTS"'
+
+  targeting_relationship_statuses:
+    sql: '"TARGETING_RELATIONSHIP_STATUSES"'
+
+  targeting_life_events:
+    sql: '"TARGETING_LIFE_EVENTS"'
+
+  targeting_industries:
+    sql: '"TARGETING_INDUSTRIES"'
+
+  targeting_income:
+    sql: '"TARGETING_INCOME"'
+
+  targeting_family_statuses:
+    sql: '"TARGETING_FAMILY_STATUSES"'
+
+  targeting_audience_network_positions:
+    sql: '"TARGETING_AUDIENCE_NETWORK_POSITIONS"'
+
+  targeting_connections:
+    sql: '"TARGETING_CONNECTIONS"'
+
+  targeting_device_platforms:
+    sql: '"TARGETING_DEVICE_PLATFORMS"'
+
+  targeting_effective_audience_network_positions:
+    sql: '"TARGETING_EFFECTIVE_AUDIENCE_NETWORK_POSITIONS"'
+
+  targeting_excluded_connections:
+    sql: '"TARGETING_EXCLUDED_CONNECTIONS"'
+
+  targeting_excluded_publisher_categories:
+    sql: '"TARGETING_EXCLUDED_PUBLISHER_CATEGORIES"'
+
+  targeting_excluded_publisher_list_ids:
+    sql: '"TARGETING_EXCLUDED_PUBLISHER_LIST_IDS"'
+
+  targeting_excluded_user_device:
+    sql: '"TARGETING_EXCLUDED_USER_DEVICE"'
+
+  targeting_facebook_positions:
+    sql: '"TARGETING_FACEBOOK_POSITIONS"'
+
+  targeting_friends_of_connections:
+    sql: '"TARGETING_FRIENDS_OF_CONNECTIONS"'
+
+  targeting_instagram_positions:
+    sql: '"TARGETING_INSTAGRAM_POSITIONS"'
+
+  targeting_publisher_platforms:
+    sql: '"TARGETING_PUBLISHER_PLATFORMS"'
+
+  targeting_user_os:
+    sql: '"TARGETING_USER_OS"'
+
+  targeting_user_device:
+    sql: '"TARGETING_USER_DEVICE"'
+
+  targeting_wireless_carrier:
+    sql: '"TARGETING_WIRELESS_CARRIER"'
+
+  targeting_education_schools:
+    sql: '"TARGETING_EDUCATION_SCHOOLS"'
+
+  targeting_education_statuses:
+    sql: '"TARGETING_EDUCATION_STATUSES"'
+
+  targeting_college_years:
+    sql: '"TARGETING_COLLEGE_YEARS"'
+
+  targeting_education_majors:
+    sql: '"TARGETING_EDUCATION_MAJORS"'
+
+  targeting_work_employers:
+    sql: '"TARGETING_WORK_EMPLOYERS"'
+
+  targeting_work_positions:
+    sql: '"TARGETING_WORK_POSITIONS"'
+
+  targeting_locales:
+    sql: '"TARGETING_LOCALES"'
+
+  targeting_user_adclusters:
+    sql: '"TARGETING_USER_ADCLUSTERS"'
+
+  targeting_flexible_spec:
+    sql: '"TARGETING_FLEXIBLE_SPEC"'
+
+  targeting_exclusions:
+    sql: '"TARGETING_EXCLUSIONS"'
+
+  targeting_geo_locations_countries:
+    sql: '"TARGETING_GEO_LOCATIONS_COUNTRIES"'
+
+  targeting_geo_locations_regions:
+    sql: '"TARGETING_GEO_LOCATIONS_REGIONS"'
+
+  targeting_geo_locations_cities:
+    sql: '"TARGETING_GEO_LOCATIONS_CITIES"'
+
+  targeting_geo_locations_zips:
+    sql: '"TARGETING_GEO_LOCATIONS_ZIPS"'
+
+  targeting_geo_locations_places:
+    sql: '"TARGETING_GEO_LOCATIONS_PLACES"'
+
+  targeting_geo_locations_custom_locations:
+    sql: '"TARGETING_GEO_LOCATIONS_CUSTOM_LOCATIONS"'
+
+  targeting_geo_locations_geo_markets:
+    sql: '"TARGETING_GEO_LOCATIONS_GEO_MARKETS"'
+
+  targeting_geo_locations_electoral_district:
+    sql: '"TARGETING_GEO_LOCATIONS_ELECTORAL_DISTRICT"'
+
+  targeting_geo_locations_location_types:
+    sql: '"TARGETING_GEO_LOCATIONS_LOCATION_TYPES"'
+
+  targeting_geo_locations_country_groups:
+    sql: '"TARGETING_GEO_LOCATIONS_COUNTRY_GROUPS"'
+
+  targeting_excluded_geo_locations_countries:
+    sql: '"TARGETING_EXCLUDED_GEO_LOCATIONS_COUNTRIES"'
+
+  targeting_excluded_geo_locations_regions:
+    sql: '"TARGETING_EXCLUDED_GEO_LOCATIONS_REGIONS"'
+
+  targeting_excluded_geo_locations_cities:
+    sql: '"TARGETING_EXCLUDED_GEO_LOCATIONS_CITIES"'
+
+  targeting_excluded_geo_locations_zips:
+    sql: '"TARGETING_EXCLUDED_GEO_LOCATIONS_ZIPS"'
+
+  targeting_excluded_geo_locations_places:
+    sql: '"TARGETING_EXCLUDED_GEO_LOCATIONS_PLACES"'
+
+  targeting_excluded_geo_locations_custom_locations:
+    sql: '"TARGETING_EXCLUDED_GEO_LOCATIONS_CUSTOM_LOCATIONS"'
+
+  targeting_excluded_geo_locations_geo_markets:
+    sql: '"TARGETING_EXCLUDED_GEO_LOCATIONS_GEO_MARKETS"'
+
+  targeting_excluded_geo_locations_electoral_district:
+    sql: '"TARGETING_EXCLUDED_GEO_LOCATIONS_ELECTORAL_DISTRICT"'
+
+  targeting_excluded_geo_locations_location_types:
+    sql: '"TARGETING_EXCLUDED_GEO_LOCATIONS_LOCATION_TYPES"'
+
+  targeting_excluded_geo_locations_country_groups:
+    sql: '"TARGETING_EXCLUDED_GEO_LOCATIONS_COUNTRY_GROUPS"'
+
+  adset_source_id:
+    sql: '"ADSET_SOURCE_ID"'
+    format: ID
+
+  _fivetran_synced:
+    sql: '"_FIVETRAN_SYNCED"'
+    hidden: true
+
+  bid_info_actions:
+    sql: '"BID_INFO_ACTIONS"'
+
+  bid_info_impressions:
+    sql: '"BID_INFO_IMPRESSIONS"'
+
+  bid_info_reach:
+    sql: '"BID_INFO_REACH"'
+
+  bid_info_clicks:
+    sql: '"BID_INFO_CLICKS"'
+
+measures:
+  count:
+    aggregate_type: count
+
+#The info below was pulled from your dbt repository and is read-only.
+dbt:
+  name: v_stg_facebook_adsets
+  target_schema: PROD
+  config:
+    materialized: view
+  code: |-
+    SELECT * FROM FIVETRAN_DATABASE.FACEBOOK_ADS.AD_SET_HISTORY
+    QUALIFY ROW_NUMBER() OVER (PARTITION BY ID ORDER BY UPDATED_TIME DESC) = 1
+  referenced_by: [ v_stg_facebook_spend ]

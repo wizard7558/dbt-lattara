@@ -1,0 +1,323 @@
+# Reference this view as dbt_prod__v_stg_facebook_accounts
+catalog: DBT
+schema: PROD
+table_name: V_STG_FACEBOOK_ACCOUNTS
+
+dimensions:
+  _fivetran_id:
+    sql: '"_FIVETRAN_ID"'
+    format: ID
+    hidden: true
+
+  age:
+    sql: '"AGE"'
+
+  amount_spent:
+    sql: '"AMOUNT_SPENT"'
+
+  balance:
+    sql: '"BALANCE"'
+
+  business_city:
+    sql: '"BUSINESS_CITY"'
+
+  business_country_code:
+    sql: '"BUSINESS_COUNTRY_CODE"'
+
+  business_name:
+    sql: '"BUSINESS_NAME"'
+
+  business_state:
+    sql: '"BUSINESS_STATE"'
+
+  business_street:
+    sql: '"BUSINESS_STREET"'
+
+  business_street_2:
+    sql: '"BUSINESS_STREET_2"'
+
+  business_zip:
+    sql: '"BUSINESS_ZIP"'
+
+  can_create_brand_lift_study:
+    sql: '"CAN_CREATE_BRAND_LIFT_STUDY"'
+
+  created_time:
+    sql: '"CREATED_TIME"'
+
+  currency:
+    sql: '"CURRENCY"'
+
+  end_advertiser:
+    sql: '"END_ADVERTISER"'
+
+  end_advertiser_name:
+    sql: '"END_ADVERTISER_NAME"'
+
+  funding_source:
+    sql: '"FUNDING_SOURCE"'
+
+  has_migrated_permissions:
+    sql: '"HAS_MIGRATED_PERMISSIONS"'
+
+  io_number:
+    sql: '"IO_NUMBER"'
+
+  is_attribution_spec_system_default:
+    sql: '"IS_ATTRIBUTION_SPEC_SYSTEM_DEFAULT"'
+
+  is_direct_deals_enabled:
+    sql: '"IS_DIRECT_DEALS_ENABLED"'
+
+  is_in_3_ds_authorization_enabled_market:
+    sql: '"IS_IN_3_DS_AUTHORIZATION_ENABLED_MARKET"'
+
+  is_notifications_enabled:
+    sql: '"IS_NOTIFICATIONS_ENABLED"'
+
+  is_personal:
+    sql: '"IS_PERSONAL"'
+
+  is_prepay_account:
+    sql: '"IS_PREPAY_ACCOUNT"'
+
+  is_tax_id_required:
+    sql: '"IS_TAX_ID_REQUIRED"'
+
+  media_agency:
+    sql: '"MEDIA_AGENCY"'
+
+  min_campaign_group_spend_cap:
+    sql: '"MIN_CAMPAIGN_GROUP_SPEND_CAP"'
+
+  min_daily_budget:
+    sql: '"MIN_DAILY_BUDGET"'
+
+  name:
+    sql: '"NAME"'
+
+  next_bill_date:
+    sql: '"NEXT_BILL_DATE"'
+
+  offsite_pixels_tos_accepted:
+    sql: '"OFFSITE_PIXELS_TOS_ACCEPTED"'
+
+  owner:
+    sql: '"OWNER"'
+
+  partner:
+    sql: '"PARTNER"'
+
+  salesforce_invoice_group_id:
+    sql: '"SALESFORCE_INVOICE_GROUP_ID"'
+    format: ID
+
+  spend_cap:
+    sql: '"SPEND_CAP"'
+
+  tax_id:
+    sql: '"TAX_ID"'
+    format: ID
+
+  tax_id_type:
+    sql: '"TAX_ID_TYPE"'
+
+  timezone_id:
+    sql: '"TIMEZONE_ID"'
+    format: ID
+
+  timezone_name:
+    sql: '"TIMEZONE_NAME"'
+
+  timezone_offset_hours_utc:
+    sql: '"TIMEZONE_OFFSET_HOURS_UTC"'
+
+  account_status:
+    sql: '"ACCOUNT_STATUS"'
+
+  disable_reason:
+    sql: '"DISABLE_REASON"'
+
+  tax_id_status:
+    sql: '"TAX_ID_STATUS"'
+
+  agency_client_declaration_agency_representing_client:
+    sql: '"AGENCY_CLIENT_DECLARATION_AGENCY_REPRESENTING_CLIENT"'
+
+  agency_client_declaration_client_based_in_france:
+    sql: '"AGENCY_CLIENT_DECLARATION_CLIENT_BASED_IN_FRANCE"'
+
+  agency_client_declaration_client_city:
+    sql: '"AGENCY_CLIENT_DECLARATION_CLIENT_CITY"'
+
+  agency_client_declaration_client_country_code:
+    sql: '"AGENCY_CLIENT_DECLARATION_CLIENT_COUNTRY_CODE"'
+
+  agency_client_declaration_client_email_address:
+    sql: '"AGENCY_CLIENT_DECLARATION_CLIENT_EMAIL_ADDRESS"'
+
+  agency_client_declaration_client_name:
+    sql: '"AGENCY_CLIENT_DECLARATION_CLIENT_NAME"'
+
+  agency_client_declaration_client_postal_code:
+    sql: '"AGENCY_CLIENT_DECLARATION_CLIENT_POSTAL_CODE"'
+
+  agency_client_declaration_client_province:
+    sql: '"AGENCY_CLIENT_DECLARATION_CLIENT_PROVINCE"'
+
+  agency_client_declaration_client_street:
+    sql: '"AGENCY_CLIENT_DECLARATION_CLIENT_STREET"'
+
+  agency_client_declaration_client_street_2:
+    sql: '"AGENCY_CLIENT_DECLARATION_CLIENT_STREET_2"'
+
+  agency_client_declaration_has_written_mandate_from_advertiser:
+    sql: '"AGENCY_CLIENT_DECLARATION_HAS_WRITTEN_MANDATE_FROM_ADVERTISER"'
+
+  agency_client_declaration_is_client_paying_invoices:
+    sql: '"AGENCY_CLIENT_DECLARATION_IS_CLIENT_PAYING_INVOICES"'
+
+  business_manager_block_offline_analytics:
+    sql: '"BUSINESS_MANAGER_BLOCK_OFFLINE_ANALYTICS"'
+
+  business_manager_created_by:
+    sql: '"BUSINESS_MANAGER_CREATED_BY"'
+
+  business_manager_created_time:
+    sql: '"BUSINESS_MANAGER_CREATED_TIME"'
+
+  business_manager_extended_updated_time:
+    sql: '"BUSINESS_MANAGER_EXTENDED_UPDATED_TIME"'
+
+  business_manager_is_hidden:
+    sql: '"BUSINESS_MANAGER_IS_HIDDEN"'
+
+  business_manager_link:
+    sql: '"BUSINESS_MANAGER_LINK"'
+
+  business_manager_name:
+    sql: '"BUSINESS_MANAGER_NAME"'
+
+  business_manager_payment_account_id:
+    sql: '"BUSINESS_MANAGER_PAYMENT_ACCOUNT_ID"'
+    format: ID
+
+  business_manager_primary_page:
+    sql: '"BUSINESS_MANAGER_PRIMARY_PAGE"'
+
+  business_manager_profile_picture_uri:
+    sql: '"BUSINESS_MANAGER_PROFILE_PICTURE_URI"'
+
+  business_manager_timezone_id:
+    sql: '"BUSINESS_MANAGER_TIMEZONE_ID"'
+    format: ID
+
+  business_manager_two_factor_type:
+    sql: '"BUSINESS_MANAGER_TWO_FACTOR_TYPE"'
+
+  business_manager_updated_by:
+    sql: '"BUSINESS_MANAGER_UPDATED_BY"'
+
+  business_manager_update_time:
+    sql: '"BUSINESS_MANAGER_UPDATE_TIME"'
+
+  business_manager_verification_status:
+    sql: '"BUSINESS_MANAGER_VERIFICATION_STATUS"'
+
+  business_manager_vertical:
+    sql: '"BUSINESS_MANAGER_VERTICAL"'
+
+  business_manager_vertical_id:
+    sql: '"BUSINESS_MANAGER_VERTICAL_ID"'
+    format: ID
+
+  business_manager_manager_id:
+    sql: '"BUSINESS_MANAGER_MANAGER_ID"'
+    format: ID
+
+  extended_credit_invoice_group_id:
+    sql: '"EXTENDED_CREDIT_INVOICE_GROUP_ID"'
+    format: ID
+
+  extended_credit_invoice_group_auto_enroll:
+    sql: '"EXTENDED_CREDIT_INVOICE_GROUP_AUTO_ENROLL"'
+
+  extended_credit_invoice_group_customer_po_number:
+    sql: '"EXTENDED_CREDIT_INVOICE_GROUP_CUSTOMER_PO_NUMBER"'
+
+  extended_credit_invoice_group_email:
+    sql: '"EXTENDED_CREDIT_INVOICE_GROUP_EMAIL"'
+
+  extended_credit_invoice_group_emails:
+    sql: '"EXTENDED_CREDIT_INVOICE_GROUP_EMAILS"'
+
+  extended_credit_invoice_group_name:
+    sql: '"EXTENDED_CREDIT_INVOICE_GROUP_NAME"'
+
+  funding_source_details_id:
+    sql: '"FUNDING_SOURCE_DETAILS_ID"'
+    format: ID
+
+  funding_source_details_coupon:
+    sql: '"FUNDING_SOURCE_DETAILS_COUPON"'
+
+  funding_source_details_coupons:
+    sql: '"FUNDING_SOURCE_DETAILS_COUPONS"'
+
+  funding_source_details_coupon_id:
+    sql: '"FUNDING_SOURCE_DETAILS_COUPON_ID"'
+    format: ID
+
+  funding_source_details_amount:
+    sql: '"FUNDING_SOURCE_DETAILS_AMOUNT"'
+
+  funding_source_details_currency:
+    sql: '"FUNDING_SOURCE_DETAILS_CURRENCY"'
+
+  funding_source_details_display_amount:
+    sql: '"FUNDING_SOURCE_DETAILS_DISPLAY_AMOUNT"'
+
+  funding_source_details_expiration:
+    sql: '"FUNDING_SOURCE_DETAILS_EXPIRATION"'
+
+  funding_source_details_display_string:
+    sql: '"FUNDING_SOURCE_DETAILS_DISPLAY_STRING"'
+
+  funding_source_details_campaign_ids:
+    sql: '"FUNDING_SOURCE_DETAILS_CAMPAIGN_IDS"'
+
+  funding_source_details_original_amount:
+    sql: '"FUNDING_SOURCE_DETAILS_ORIGINAL_AMOUNT"'
+
+  funding_source_details_original_display_amount:
+    sql: '"FUNDING_SOURCE_DETAILS_ORIGINAL_DISPLAY_AMOUNT"'
+
+  funding_source_details_type:
+    sql: '"FUNDING_SOURCE_DETAILS_TYPE"'
+
+  capabilities:
+    sql: '"CAPABILITIES"'
+
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  _fivetran_synced:
+    sql: '"_FIVETRAN_SYNCED"'
+    hidden: true
+
+measures:
+  count:
+    aggregate_type: count
+
+#The info below was pulled from your dbt repository and is read-only.
+dbt:
+  name: v_stg_facebook_accounts
+  target_schema: PROD
+  config:
+    materialized: view
+  code: |-
+    SELECT * FROM FIVETRAN_DATABASE.FACEBOOK_ADS.ACCOUNT_HISTORY
+    QUALIFY ROW_NUMBER() OVER (PARTITION BY ID ORDER BY _FIVETRAN_SYNCED DESC) = 1
+  referenced_by: [ v_stg_facebook_spend ]
