@@ -1,4 +1,4 @@
- {{config(materialized = "table")}} 
+
 
 SELECT date
         , acc.account_name as account
