@@ -1,47 +1,54 @@
 {{config(materialized = "table")}} 
 
-select Date
-     , "Meta" as Platform
-     , Account
-     , Campaign
-     , sum(Spend) as Spend
-     , sum(Impressions) as Impressions
-     , sum(Clicks) as Clicks
-     , sum(revenue) as Revenue
-from {{ ref('facebook_ads_performance') }}
-group by 1,2,3,4
-union all
-select date_day
-     , "Google" as Platform
-     , account_name
-     , campaign_name
-     , sum(spend) as Spend
-     , sum(impressions) as Impressions
-     , sum(clicks) as Clicks
-     , sum(conversions_value) as Revenue
-from FIVETRAN_DATABASE.GOOGLE_ADS_FM_GOOGLE_ADS.GOOGLE_ADS__CAMPAIGN_REPORT
-group by 1,2,3,4
-union all
 select date
-     , "TikTok" as Platform
+     , 'Meta' as platform
      , account
      , campaign
-     , sum(Spend) as Spend
-     , sum(Impressions) as Impressions
-     , sum(Clicks) as Clicks
-     , sum(total_purchase_value) as Revenue
+     , sum(spend) as spend
+     , sum(impressions) as impressions
+     , sum(clicks) as clicks
+     , sum(revenue) as revenue
+from {{ ref('facebook_ads_performance') }}
+group by 1,2,3,4
+
+union all
+
+select date
+     , 'Google' as platform
+     , account
+     , campaign
+     , sum(spend) as spend
+     , sum(impressions) as impressions
+     , sum(clicks) as clicks
+     , sum(revenue) as revenue
+from {{ ref('google_ads_performance') }}
+group by 1,2,3,4
+
+union all
+
+select date
+     , 'TikTok' as platform
+     , account
+     , campaign
+     , sum(spend) as spend
+     , sum(impressions) as impressions
+     , sum(clicks) as clicks
+     , sum(revenue) as revenue
 from {{ ref('tiktok_ads_performance') }}
 group by 1,2,3,4
+
 union all
-select Date
-     , "LinkedIn" as Platform
-     , Account
-     , Campaign
-     , sum(Spend) as Spend
-     , sum(Impressions) as Impressions
-     , sum(Clicks) as Clicks
-     , sum(Revenue) as Revenue
+
+select date
+     , 'LinkedIn' as platform
+     , account
+     , campaign
+     , sum(spend) as spend
+     , sum(impressions) as impressions
+     , sum(clicks) as clicks
+     , sum(revenue) as revenue
 from {{ ref('linkedin_ads_performance') }}
-where Spend > 0 
+where spend > 0 
 group by 1,2,3,4
+
 order by 1 desc, 2 asc, 5 desc
