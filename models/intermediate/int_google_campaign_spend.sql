@@ -8,7 +8,6 @@ SELECT
     cs.customer_id,
     cam.campaign_name AS campaign,
     cs.id AS campaign_id,
-    cam.advertising_channel_type AS campaign_type,
     SUM(cs.cost_micros) / 1000000 AS spend,
     SUM(cs.impressions) AS impressions,
     SUM(cs.clicks) AS clicks,
@@ -19,5 +18,5 @@ LEFT JOIN {{ ref('v_stg_google_accounts') }} acc
     ON acc.customer_id = cs.customer_id
 LEFT JOIN {{ ref('v_stg_google_campaigns') }} cam
     ON cam.campaign_id = cs.id
-GROUP BY 1, 2, 3, 4, 5, 6
+GROUP BY 1, 2, 3, 4, 5
 ORDER BY 1 DESC

@@ -19,7 +19,7 @@ select date
      , sum(spend) as spend
      , sum(impressions) as impressions
      , sum(clicks) as clicks
-from {{ ref('google_ads_performance') }}
+from {{ ref('google_ads_campaign_performance') }}
 group by 1,2,3,4
 
 union all
