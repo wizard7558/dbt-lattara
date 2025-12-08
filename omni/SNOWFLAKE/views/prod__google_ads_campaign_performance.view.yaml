@@ -1,0 +1,117 @@
+# Reference this view as prod__google_ads_campaign_performance
+schema: PROD
+table_name: GOOGLE_ADS_CAMPAIGN_PERFORMANCE
+
+# Compound primary key: date + customer_id + campaign_id + conversion_action_name
+custom_compound_primary_key_sql: [DATE, CUSTOMER_ID, CAMPAIGN_ID, CONVERSION_ACTION_NAME]
+
+label: Google Ads Campaign Performance
+description: |
+  Campaign-level Google Ads performance data with conversion action breakdown.
+  100% spend coverage across all campaign types including Performance Max.
+  Use this for high-level campaign analysis and budget allocation.
+
+ai_context: |
+  This view contains Google Ads campaign performance at the campaign level.
+  Each row represents a date + campaign + conversion action combination.
+  Spend, impressions, and clicks are deduplicated (only counted once per date/campaign).
+  Conversions are broken out by conversion action name.
+  To get total spend, sum the spend column. To get conversions by action, group by conversion_action_name.
+
+dimensions:
+  date:
+    sql: ${TABLE}.DATE
+    type: date
+    label: Date
+    description: Performance date
+    
+  account:
+    sql: ${TABLE}.ACCOUNT
+    label: Account
+    description: Google Ads account name
+    
+  customer_id:
+    sql: ${TABLE}.CUSTOMER_ID
+    label: Customer ID
+    description: Google Ads customer ID
+    
+  campaign:
+    sql: ${TABLE}.CAMPAIGN
+    label: Campaign
+    description: Campaign name
+    
+  campaign_id:
+    sql: ${TABLE}.CAMPAIGN_ID
+    label: Campaign ID
+    description: Google Ads campaign ID
+    hidden: true
+    
+  conversion_action_name:
+    sql: ${TABLE}.CONVERSION_ACTION_NAME
+    label: Conversion Action
+    description: Name of the conversion action
+
+measures:
+  total_spend:
+    sql: ${TABLE}.SPEND
+    aggregate_type: sum
+    format: usd
+    label: Spend
+    description: Total ad spend in USD
+    
+  total_impressions:
+    sql: ${TABLE}.IMPRESSIONS
+    aggregate_type: sum
+    format: number
+    label: Impressions
+    description: Total impressions
+    
+  total_clicks:
+    sql: ${TABLE}.CLICKS
+    aggregate_type: sum
+    format: number
+    label: Clicks
+    description: Total clicks
+    
+  total_conversions:
+    sql: ${TABLE}.CONVERSIONS
+    aggregate_type: sum
+    format: number_2
+    label: Conversions
+    description: Total conversions
+    
+  total_conversion_value:
+    sql: ${TABLE}.CONVERSION_VALUE
+    aggregate_type: sum
+    format: usd
+    label: Conversion Value
+    description: Total conversion value in USD
+    
+  cpc:
+    sql: NULLIF(${total_clicks}, 0)
+    aggregate_type: number
+    format: usd_2
+    label: CPC
+    description: Cost per click
+    sql: ${total_spend} / NULLIF(${total_clicks}, 0)
+    
+  ctr:
+    sql: (${total_clicks} / NULLIF(${total_impressions}, 0)) * 100
+    aggregate_type: number
+    format: percent_2
+    label: CTR
+    description: Click-through rate
+    
+  cpa:
+    sql: ${total_spend} / NULLIF(${total_conversions}, 0)
+    aggregate_type: number
+    format: usd_2
+    label: CPA
+    description: Cost per acquisition
+    
+  roas:
+    sql: ${total_conversion_value} / NULLIF(${total_spend}, 0)
+    aggregate_type: number
+    format: number_2
+    label: ROAS
+    description: Return on ad spend
