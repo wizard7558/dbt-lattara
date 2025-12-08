@@ -1,0 +1,23 @@
+# Google Ads Campaign Performance Topic
+base_view: prod__google_ads_campaign_performance
+label: Google Ads - Campaigns
+group_label: Google Ads
+
+description: |
+  Campaign-level Google Ads performance with conversion action detail.
+  100% spend coverage including Performance Max campaigns.
+  Best for budget allocation and campaign strategy analysis.
+
+ai_context: |
+  Use this topic for campaign-level Google Ads analysis.
+  Includes all campaign types: Search, Performance Max, Demand Gen, Video.
+  Each row has date, campaign, and conversion action. Sum spend for totals.
+  Group by conversion_action_name to see performance by conversion type.
+  For ad group or keyword level analysis, use the Ad Group or Keyword topics.
+
+default_filters:
+  prod__google_ads_campaign_performance.date:
+    time_for_duration: [30 days ago, 30 days]
+
+fields:
+  - prod__google_ads_campaign_performance.*

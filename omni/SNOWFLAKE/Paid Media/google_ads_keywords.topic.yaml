@@ -1,0 +1,23 @@
+# Google Ads Keyword Performance Topic
+base_view: prod__google_ads_keyword_performance
+label: Google Ads - Keywords
+group_label: Google Ads
+
+description: |
+  Keyword-level Google Ads performance with conversion action detail.
+  Search campaigns only (81% spend coverage).
+  Use for keyword optimization and search query analysis.
+
+ai_context: |
+  Use this topic for keyword-level Google Ads analysis.
+  Search campaigns only. Other campaign types do not have keywords.
+  Each row has date, keyword, match type, and conversion action.
+  Sum spend for totals. Group by keyword and match_type for keyword analysis.
+  For broader coverage, use Campaign topic (100%) or Ad Group topic (90%).
+
+default_filters:
+  prod__google_ads_keyword_performance.date:
+    time_for_duration: [30 days ago, 30 days]
+
+fields:
+  - prod__google_ads_keyword_performance.*
