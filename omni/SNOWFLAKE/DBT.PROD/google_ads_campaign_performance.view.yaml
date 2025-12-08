@@ -1,9 +1,5 @@
-# Reference this view as prod__google_ads_campaign_performance
-schema: PROD
+# Reference this view as dbt_prod__google_ads_campaign_performance
 table_name: GOOGLE_ADS_CAMPAIGN_PERFORMANCE
-
-# Compound primary key: date + customer_id + campaign_id + conversion_action_name
-custom_compound_primary_key_sql: [DATE, CUSTOMER_ID, CAMPAIGN_ID, CONVERSION_ACTION_NAME]
 
 label: Google Ads Campaign Performance
 description: |
@@ -34,6 +30,7 @@ dimensions:
     sql: ${TABLE}.CUSTOMER_ID
     label: Customer ID
     description: Google Ads customer ID
+    hidden: true
     
   campaign:
     sql: ${TABLE}.CAMPAIGN
@@ -88,12 +85,11 @@ measures:
     description: Total conversion value in USD
     
   cpc:
-    sql: NULLIF(${total_clicks}, 0)
+    sql: ${total_spend} / NULLIF(${total_clicks}, 0)
     aggregate_type: number
     format: usd_2
     label: CPC
     description: Cost per click
-    sql: ${total_spend} / NULLIF(${total_clicks}, 0)
     
   ctr:
     sql: (${total_clicks} / NULLIF(${total_impressions}, 0)) * 100
@@ -101,6 +97,13 @@ measures:
     format: percent_2
     label: CTR
     description: Click-through rate
+    
+  cpm:
+    sql: (${total_spend} / NULLIF(${total_impressions}, 0)) * 1000
+    aggregate_type: number
+    format: usd_2
+    label: CPM
+    description: Cost per thousand impressions
     
   cpa:
     sql: ${total_spend} / NULLIF(${total_conversions}, 0)
@@ -115,3 +118,10 @@ measures:
     format: number_2
     label: ROAS
     description: Return on ad spend
+    
+  conversion_rate:
+    sql: (${total_conversions} / NULLIF(${total_clicks}, 0)) * 100
+    aggregate_type: number
+    format: percent_2
+    label: Conversion Rate
+    description: Conversions divided by clicks

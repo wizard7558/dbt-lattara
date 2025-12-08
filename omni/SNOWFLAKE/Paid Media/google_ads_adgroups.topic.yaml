@@ -1,24 +1,34 @@
 # Google Ads Ad Group Performance Topic
-base_view: prod__google_ads_adgroup_performance
-label: Google Ads - Ad Groups
-group_label: Google Ads
-
+base_view: dbt_prod__google_ads_adgroup_performance
+base_view_label: Google Ads Ad Groups
+label: Google Ads Ad Group Performance
+group_label: Paid Media
 description: |
-  Ad group-level Google Ads performance with conversion action detail.
-  Covers Search, Demand Gen, and Video campaigns (90% spend coverage).
-  Performance Max excluded as it has no ad groups.
-
+  Ad group-level Google Ads performance data including spend, impressions, 
+  clicks, and conversions. Covers Search, Demand Gen, and Video campaigns
+  (90% spend coverage). Performance Max excluded as it has no ad groups.
+joins: {}
 ai_context: |
-  Use this topic for ad group-level Google Ads analysis.
-  Includes Search, Demand Gen, and Video campaigns only.
-  Performance Max campaigns are excluded (no ad groups in PMax).
-  Each row has date, ad group, and conversion action. Sum spend for totals.
-  For campaign-level totals including PMax, use the Campaign topic.
-  For keyword-level detail, use the Keyword topic.
-
-default_filters:
-  prod__google_ads_adgroup_performance.date:
-    time_for_duration: [30 days ago, 30 days]
-
-fields:
-  - prod__google_ads_adgroup_performance.*
+  This topic contains Google Ads ad group performance data.
+  Key metrics available:
+  - total_spend: Total advertising spend in USD
+  - total_impressions: Number of times ads were shown
+  - total_clicks: Number of clicks on ads
+  - total_conversions: Number of conversion events
+  - total_conversion_value: Revenue from conversions
+  - ctr: Click-through rate (clicks / impressions)
+  - cpc: Cost per click (spend / clicks)
+  - cpm: Cost per thousand impressions
+  - cpa: Cost per acquisition (spend / conversions)
+  - roas: Return on ad spend (conversion_value / spend)
+  - conversion_rate: Conversions / clicks
+  Data hierarchy:
+  - Account > Campaign > Ad Group > Conversion Action
+  Common questions:
+  - What is our total spend by ad group?
+  - Which ad groups have the best CTR?
+  - What is our average CPC by ad group?
+  - Show me ad group performance trends
+  When asked about performance, default to using total_spend, total_clicks, 
+  and ctr. For conversion analysis, use total_conversions and cpa.
+  Note: Performance Max campaigns are excluded (no ad groups).

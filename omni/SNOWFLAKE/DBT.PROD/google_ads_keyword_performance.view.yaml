@@ -1,22 +1,17 @@
-# Reference this view as prod__google_ads_adgroup_performance
-schema: PROD
-table_name: GOOGLE_ADS_ADGROUP_PERFORMANCE
+# Reference this view as dbt_prod__google_ads_keyword_performance
+table_name: GOOGLE_ADS_KEYWORD_PERFORMANCE
 
-# Compound primary key: date + customer_id + ad_group_id + conversion_action_name
-custom_compound_primary_key_sql: [DATE, CUSTOMER_ID, AD_GROUP_ID, CONVERSION_ACTION_NAME]
-
-label: Google Ads Ad Group Performance
+label: Google Ads Keyword Performance
 description: |
-  Ad group-level Google Ads performance data with conversion action breakdown.
-  Covers Search, Demand Gen, and Video campaigns (90% spend coverage).
-  Performance Max campaigns excluded as they have no ad groups.
+  Keyword-level Google Ads performance data with conversion action breakdown.
+  Search campaigns only (81% spend coverage).
+  Use for keyword optimization and search query analysis.
 
 ai_context: |
-  This view contains Google Ads performance at the ad group level.
-  Each row represents a date + ad group + conversion action combination.
-  Spend, impressions, and clicks are deduplicated (only counted once per date/ad group).
-  Conversions are broken out by conversion action name.
-  Does not include Performance Max campaigns. Use campaign-level for full spend coverage.
+  This view contains Google Ads keyword performance.
+  Each row represents a date + keyword + match type + conversion action combination.
+  Search campaigns only. Other campaign types do not have keywords.
+  For broader coverage, use Campaign (100%) or Ad Group (90%) views.
 
 dimensions:
   date:
@@ -34,6 +29,7 @@ dimensions:
     sql: ${TABLE}.CUSTOMER_ID
     label: Customer ID
     description: Google Ads customer ID
+    hidden: true
     
   campaign:
     sql: ${TABLE}.CAMPAIGN
@@ -46,8 +42,8 @@ dimensions:
     description: Google Ads campaign ID
     hidden: true
     
-  adgroup:
-    sql: ${TABLE}.ADGROUP
+  ad_group:
+    sql: ${TABLE}.AD_GROUP
     label: Ad Group
     description: Ad group name
     
@@ -56,6 +52,22 @@ dimensions:
     label: Ad Group ID
     description: Google Ads ad group ID
     hidden: true
+    
+  keyword:
+    sql: ${TABLE}.KEYWORD
+    label: Keyword
+    description: Keyword text
+    
+  keyword_id:
+    sql: ${TABLE}.KEYWORD_ID
+    label: Keyword ID
+    description: Google Ads keyword ID
+    hidden: true
+    
+  match_type:
+    sql: ${TABLE}.MATCH_TYPE
+    label: Match Type
+    description: Keyword match type (Broad, Phrase, Exact)
     
   conversion_action_name:
     sql: ${TABLE}.CONVERSION_ACTION_NAME
@@ -112,6 +124,13 @@ measures:
     label: CTR
     description: Click-through rate
     
+  cpm:
+    sql: (${total_spend} / NULLIF(${total_impressions}, 0)) * 1000
+    aggregate_type: number
+    format: usd_2
+    label: CPM
+    description: Cost per thousand impressions
+    
   cpa:
     sql: ${total_spend} / NULLIF(${total_conversions}, 0)
     aggregate_type: number
@@ -125,3 +144,10 @@ measures:
     format: number_2
     label: ROAS
     description: Return on ad spend
+    
+  conversion_rate:
+    sql: (${total_conversions} / NULLIF(${total_clicks}, 0)) * 100
+    aggregate_type: number
+    format: percent_2
+    label: Conversion Rate
+    description: Conversions divided by clicks

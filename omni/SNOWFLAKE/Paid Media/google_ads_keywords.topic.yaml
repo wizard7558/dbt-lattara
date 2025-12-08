@@ -1,23 +1,37 @@
 # Google Ads Keyword Performance Topic
-base_view: prod__google_ads_keyword_performance
-label: Google Ads - Keywords
-group_label: Google Ads
-
+base_view: dbt_prod__google_ads_keyword_performance
+base_view_label: Google Ads Keywords
+label: Google Ads Keyword Performance
+group_label: Paid Media
 description: |
-  Keyword-level Google Ads performance with conversion action detail.
-  Search campaigns only (81% spend coverage).
+  Keyword-level Google Ads performance data including spend, impressions, 
+  clicks, and conversions. Search campaigns only (81% spend coverage).
   Use for keyword optimization and search query analysis.
-
+joins: {}
 ai_context: |
-  Use this topic for keyword-level Google Ads analysis.
-  Search campaigns only. Other campaign types do not have keywords.
-  Each row has date, keyword, match type, and conversion action.
-  Sum spend for totals. Group by keyword and match_type for keyword analysis.
-  For broader coverage, use Campaign topic (100%) or Ad Group topic (90%).
-
-default_filters:
-  prod__google_ads_keyword_performance.date:
-    time_for_duration: [30 days ago, 30 days]
-
-fields:
-  - prod__google_ads_keyword_performance.*
+  This topic contains Google Ads keyword performance data.
+  Key metrics available:
+  - total_spend: Total advertising spend in USD
+  - total_impressions: Number of times ads were shown
+  - total_clicks: Number of clicks on ads
+  - total_conversions: Number of conversion events
+  - total_conversion_value: Revenue from conversions
+  - ctr: Click-through rate (clicks / impressions)
+  - cpc: Cost per click (spend / clicks)
+  - cpm: Cost per thousand impressions
+  - cpa: Cost per acquisition (spend / conversions)
+  - roas: Return on ad spend (conversion_value / spend)
+  - conversion_rate: Conversions / clicks
+  Data hierarchy:
+  - Account > Campaign > Ad Group > Keyword > Conversion Action
+  Key dimensions:
+  - keyword: The keyword text
+  - match_type: Broad, Phrase, or Exact
+  Common questions:
+  - What is our total spend by keyword?
+  - Which keywords have the best CTR?
+  - What is our average CPC by match type?
+  - Show me top performing keywords by conversions
+  When asked about performance, default to using total_spend, total_clicks, 
+  and ctr. For conversion analysis, use total_conversions and cpa.
+  Note: Search campaigns only. Use Campaign topic for 100% coverage.

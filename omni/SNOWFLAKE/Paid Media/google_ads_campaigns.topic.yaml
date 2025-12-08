@@ -1,23 +1,33 @@
 # Google Ads Campaign Performance Topic
-base_view: prod__google_ads_campaign_performance
-label: Google Ads - Campaigns
-group_label: Google Ads
-
+base_view: dbt_prod__google_ads_campaign_performance
+base_view_label: Google Ads Campaigns
+label: Google Ads Campaign Performance
+group_label: Paid Media
 description: |
-  Campaign-level Google Ads performance with conversion action detail.
-  100% spend coverage including Performance Max campaigns.
-  Best for budget allocation and campaign strategy analysis.
-
+  Campaign-level Google Ads performance data including spend, impressions, 
+  clicks, and conversions. 100% spend coverage including Performance Max.
+  Use this topic for budget allocation and campaign strategy analysis.
+joins: {}
 ai_context: |
-  Use this topic for campaign-level Google Ads analysis.
-  Includes all campaign types: Search, Performance Max, Demand Gen, Video.
-  Each row has date, campaign, and conversion action. Sum spend for totals.
-  Group by conversion_action_name to see performance by conversion type.
-  For ad group or keyword level analysis, use the Ad Group or Keyword topics.
-
-default_filters:
-  prod__google_ads_campaign_performance.date:
-    time_for_duration: [30 days ago, 30 days]
-
-fields:
-  - prod__google_ads_campaign_performance.*
+  This topic contains Google Ads campaign performance data.
+  Key metrics available:
+  - total_spend: Total advertising spend in USD
+  - total_impressions: Number of times ads were shown
+  - total_clicks: Number of clicks on ads
+  - total_conversions: Number of conversion events
+  - total_conversion_value: Revenue from conversions
+  - ctr: Click-through rate (clicks / impressions)
+  - cpc: Cost per click (spend / clicks)
+  - cpm: Cost per thousand impressions
+  - cpa: Cost per acquisition (spend / conversions)
+  - roas: Return on ad spend (conversion_value / spend)
+  - conversion_rate: Conversions / clicks
+  Data hierarchy:
+  - Account > Campaign > Conversion Action
+  Common questions:
+  - What is our total spend by campaign?
+  - Which campaigns have the best ROAS?
+  - What is our average CPA by month?
+  - Show me spend trends over time
+  When asked about performance, default to using total_spend, total_clicks, 
+  and ctr. For conversion analysis, use total_conversions and cpa.
