@@ -1,0 +1,285 @@
+# Reference this view as omni_dbt__v_stg_facebook_ads
+schema_label: ""
+
+schema: omni_dbt
+table_name: V_STG_FACEBOOK_ADS
+
+dimensions:
+  id:
+    sql: '"ID"'
+    format: ID
+    primary_key: true
+
+  updated_time:
+    sql: '"UPDATED_TIME"'
+
+  account_id:
+    sql: '"ACCOUNT_ID"'
+    format: ID
+
+  campaign_id:
+    sql: '"CAMPAIGN_ID"'
+    format: ID
+
+  creative_id:
+    sql: '"CREATIVE_ID"'
+    format: ID
+
+  bid_amount:
+    sql: '"BID_AMOUNT"'
+
+  bid_type:
+    sql: '"BID_TYPE"'
+
+  configured_status:
+    sql: '"CONFIGURED_STATUS"'
+
+  conversion_domain:
+    sql: '"CONVERSION_DOMAIN"'
+
+  created_time:
+    sql: '"CREATED_TIME"'
+
+  effective_status:
+    sql: '"EFFECTIVE_STATUS"'
+
+  last_updated_by_app_id:
+    sql: '"LAST_UPDATED_BY_APP_ID"'
+    format: ID
+
+  name:
+    sql: '"NAME"'
+
+  preview_shareable_link:
+    sql: '"PREVIEW_SHAREABLE_LINK"'
+
+  status:
+    sql: '"STATUS"'
+
+  ad_set_id:
+    sql: '"AD_SET_ID"'
+    format: ID
+
+  ad_source_id:
+    sql: '"AD_SOURCE_ID"'
+    format: ID
+
+  _fivetran_synced:
+    sql: '"_FIVETRAN_SYNCED"'
+    hidden: true
+
+  bid_info_actions:
+    sql: '"BID_INFO_ACTIONS"'
+
+  placement_specific_instagram_discriminatory_practices:
+    sql: '"PLACEMENT_SPECIFIC_INSTAGRAM_DISCRIMINATORY_PRACTICES"'
+
+  global_discriminatory_practices:
+    sql: '"GLOBAL_DISCRIMINATORY_PRACTICES"'
+
+  placement_specific_facebook_discriminatory_practices:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_DISCRIMINATORY_PRACTICES"'
+
+  global_advertising_policies:
+    sql: '"GLOBAL_ADVERTISING_POLICIES"'
+
+  global_prohibited_financial_products_and_services:
+    sql: '"GLOBAL_PROHIBITED_FINANCIAL_PRODUCTS_AND_SERVICES"'
+
+  placement_specific_instagram_non_existent_functionality:
+    sql: '"PLACEMENT_SPECIFIC_INSTAGRAM_NON_EXISTENT_FUNCTIONALITY"'
+
+  global_non_existent_functionality:
+    sql: '"GLOBAL_NON_EXISTENT_FUNCTIONALITY"'
+
+  placement_specific_facebook_non_existent_functionality:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_NON_EXISTENT_FUNCTIONALITY"'
+
+  placement_specific_facebook_personal_health_and_appearance:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_PERSONAL_HEALTH_AND_APPEARANCE"'
+
+  placement_specific_instagram_personal_health_and_appearance:
+    sql: '"PLACEMENT_SPECIFIC_INSTAGRAM_PERSONAL_HEALTH_AND_APPEARANCE"'
+
+  global_drugs_and_pharmaceuticals:
+    sql: '"GLOBAL_DRUGS_AND_PHARMACEUTICALS"'
+
+  placement_specific_facebook_non_functional_landing_page:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_NON_FUNCTIONAL_LANDING_PAGE"'
+
+  placement_specific_instagram_non_functional_landing_page:
+    sql: '"PLACEMENT_SPECIFIC_INSTAGRAM_NON_FUNCTIONAL_LANDING_PAGE"'
+
+  global_non_functional_landing_page:
+    sql: '"GLOBAL_NON_FUNCTIONAL_LANDING_PAGE"'
+
+  placement_specific_facebook_unacceptable_business_practices:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_UNACCEPTABLE_BUSINESS_PRACTICES"'
+
+  global_unacceptable_business_practices:
+    sql: '"GLOBAL_UNACCEPTABLE_BUSINESS_PRACTICES"'
+
+  placement_specific_instagram_unacceptable_business_practices:
+    sql: '"PLACEMENT_SPECIFIC_INSTAGRAM_UNACCEPTABLE_BUSINESS_PRACTICES"'
+
+  placement_specific_facebook_online_gambling_and_games:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_ONLINE_GAMBLING_AND_GAMES"'
+
+  placement_specific_instagram_online_gambling_and_games:
+    sql: '"PLACEMENT_SPECIFIC_INSTAGRAM_ONLINE_GAMBLING_AND_GAMES"'
+
+  global_online_gambling_and_games:
+    sql: '"GLOBAL_ONLINE_GAMBLING_AND_GAMES"'
+
+  global_brand_usage_in_ads:
+    sql: '"GLOBAL_BRAND_USAGE_IN_ADS"'
+
+  placement_specific_facebook_brand_usage_in_ads:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_BRAND_USAGE_IN_ADS"'
+
+  global_locally_illegal_content_products_or_services:
+    sql: '"GLOBAL_LOCALLY_ILLEGAL_CONTENT_PRODUCTS_OR_SERVICES"'
+
+  placement_specific_facebook_locally_illegal_content_products_or_services:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_LOCALLY_ILLEGAL_CONTENT_PRODUCTS_OR_SERVICES"'
+
+  placement_specific_instagram_locally_illegal_content_products_or_services:
+    sql: '"PLACEMENT_SPECIFIC_INSTAGRAM_LOCALLY_ILLEGAL_CONTENT_PRODUCTS_OR_SERVICES"'
+
+  bid_info_impressions:
+    sql: '"BID_INFO_IMPRESSIONS"'
+
+  bid_info_clicks:
+    sql: '"BID_INFO_CLICKS"'
+
+  placement_specific_instagram_alcohol:
+    sql: '"PLACEMENT_SPECIFIC_INSTAGRAM_ALCOHOL"'
+
+  placement_specific_facebook_alcohol:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_ALCOHOL"'
+
+  global_alcohol:
+    sql: '"GLOBAL_ALCOHOL"'
+
+  bid_info_reach:
+    sql: '"BID_INFO_REACH"'
+
+  placement_specific_instagram_drugs_and_pharmaceuticals:
+    sql: '"PLACEMENT_SPECIFIC_INSTAGRAM_DRUGS_AND_PHARMACEUTICALS"'
+
+  placement_specific_facebook_drugs_and_pharmaceuticals:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_DRUGS_AND_PHARMACEUTICALS"'
+
+  placement_specific_facebook_ads_about_social_issues_elections_or_politics:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_ADS_ABOUT_SOCIAL_ISSUES_ELECTIONS_OR_POLITICS"'
+
+  placement_specific_instagram_ads_about_social_issues_elections_or_politics:
+    sql: '"PLACEMENT_SPECIFIC_INSTAGRAM_ADS_ABOUT_SOCIAL_ISSUES_ELECTIONS_OR_POLITICS"'
+
+  global_ads_about_social_issues_elections_or_politics:
+    sql: '"GLOBAL_ADS_ABOUT_SOCIAL_ISSUES_ELECTIONS_OR_POLITICS"'
+
+  global_grammar_and_profanity:
+    sql: '"GLOBAL_GRAMMAR_AND_PROFANITY"'
+
+  placement_specific_facebook_grammar_and_profanity:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_GRAMMAR_AND_PROFANITY"'
+
+  placement_specific_facebook_unrealistic_outcomes:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_UNREALISTIC_OUTCOMES"'
+
+  global_unrealistic_outcomes:
+    sql: '"GLOBAL_UNREALISTIC_OUTCOMES"'
+
+  global_financial_and_insurance_products_and_services:
+    sql: '"GLOBAL_FINANCIAL_AND_INSURANCE_PRODUCTS_AND_SERVICES"'
+
+  placement_specific_instagram_fraud_scams_and_deceptive_practices:
+    sql: '"PLACEMENT_SPECIFIC_INSTAGRAM_FRAUD_SCAMS_AND_DECEPTIVE_PRACTICES"'
+
+  placement_specific_facebook_fraud_scams_and_deceptive_practices:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_FRAUD_SCAMS_AND_DECEPTIVE_PRACTICES"'
+
+  global_fraud_scams_and_deceptive_practices:
+    sql: '"GLOBAL_FRAUD_SCAMS_AND_DECEPTIVE_PRACTICES"'
+
+  global_lead_ads:
+    sql: '"GLOBAL_LEAD_ADS"'
+
+  placement_specific_facebook_lead_ads:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_LEAD_ADS"'
+
+  global_privacy_violations_and_personal_attributes:
+    sql: '"GLOBAL_PRIVACY_VIOLATIONS_AND_PERSONAL_ATTRIBUTES"'
+
+  placement_specific_instagram_privacy_violations_and_personal_attributes:
+    sql: '"PLACEMENT_SPECIFIC_INSTAGRAM_PRIVACY_VIOLATIONS_AND_PERSONAL_ATTRIBUTES"'
+
+  placement_specific_facebook_privacy_violations_and_personal_attributes:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_PRIVACY_VIOLATIONS_AND_PERSONAL_ATTRIBUTES"'
+
+  placement_specific_facebook_text_in_ad_images:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_TEXT_IN_AD_IMAGES"'
+
+  placement_specific_instagram_text_in_ad_images:
+    sql: '"PLACEMENT_SPECIFIC_INSTAGRAM_TEXT_IN_AD_IMAGES"'
+
+  global_text_in_ad_images:
+    sql: '"GLOBAL_TEXT_IN_AD_IMAGES"'
+
+  placement_specific_instagram_brand_usage_in_ads:
+    sql: '"PLACEMENT_SPECIFIC_INSTAGRAM_BRAND_USAGE_IN_ADS"'
+
+  placement_specific_instagram_lead_ads:
+    sql: '"PLACEMENT_SPECIFIC_INSTAGRAM_LEAD_ADS"'
+
+  placement_specific_facebook_cryptocurrency_products_and_services:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_CRYPTOCURRENCY_PRODUCTS_AND_SERVICES"'
+
+  global_cryptocurrency_products_and_services:
+    sql: '"GLOBAL_CRYPTOCURRENCY_PRODUCTS_AND_SERVICES"'
+
+  placement_specific_instagram_cryptocurrency_products_and_services:
+    sql: '"PLACEMENT_SPECIFIC_INSTAGRAM_CRYPTOCURRENCY_PRODUCTS_AND_SERVICES"'
+
+  global_health_and_wellness:
+    sql: '"GLOBAL_HEALTH_AND_WELLNESS"'
+
+  placement_specific_facebook_health_and_wellness:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_HEALTH_AND_WELLNESS"'
+
+  placement_specific_instagram_health_and_wellness:
+    sql: '"PLACEMENT_SPECIFIC_INSTAGRAM_HEALTH_AND_WELLNESS"'
+
+  global_personal_health_and_appearance:
+    sql: '"GLOBAL_PERSONAL_HEALTH_AND_APPEARANCE"'
+
+  placement_specific_facebook_advertising_policies:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_ADVERTISING_POLICIES"'
+
+  placement_specific_instagram_advertising_policies:
+    sql: '"PLACEMENT_SPECIFIC_INSTAGRAM_ADVERTISING_POLICIES"'
+
+  placement_specific_facebook_circumventing_systems:
+    sql: '"PLACEMENT_SPECIFIC_FACEBOOK_CIRCUMVENTING_SYSTEMS"'
+
+  global_circumventing_systems:
+    sql: '"GLOBAL_CIRCUMVENTING_SYSTEMS"'
+
+  placement_specific_instagram_circumventing_systems:
+    sql: '"PLACEMENT_SPECIFIC_INSTAGRAM_CIRCUMVENTING_SYSTEMS"'
+
+measures:
+  count:
+    aggregate_type: count
+
+#The info below was pulled from your dbt repository and is read-only.
+dbt:
+  name: v_stg_facebook_ads
+  target_schema: PROD
+  config:
+    materialized: view
+  code: |-
+    SELECT * FROM FIVETRAN_DATABASE.FACEBOOK_ADS.AD_HISTORY
+    QUALIFY ROW_NUMBER() OVER (PARTITION BY ID ORDER BY UPDATED_TIME DESC) = 1
+  referenced_by: [ v_stg_facebook_spend ]

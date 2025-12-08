@@ -1,0 +1,205 @@
+# Reference this view as dbt_prod__all_ads_performance
+catalog: DBT
+schema: PROD
+table_name: ALL_ADS_PERFORMANCE
+
+dimensions:
+  # Compound primary key
+  primary_key:
+    sql: CONCAT(${date}, '-', ${platform}, '-', ${campaign}, '-',
+      COALESCE(${ad_group}, 'none'), '-', COALESCE(${conversion_name}, 'none'))
+    hidden: true
+    primary_key: true
+
+  # Date dimension
+  date:
+    sql: '"DATE"'
+    label: Date
+    timeframes: [ raw, date, week, month, quarter, year ]
+    convert_tz: false
+
+  # Platform dimension
+  platform:
+    sql: '"PLATFORM"'
+    label: Platform
+    description: Advertising platform (Facebook, Google)
+
+  # Hierarchy dimensions
+  account:
+    sql: '"ACCOUNT"'
+    label: Account
+    description: Ad account name
+
+  campaign:
+    sql: '"CAMPAIGN"'
+    label: Campaign
+    description: Campaign name
+
+  ad_group:
+    sql: '"AD_GROUP"'
+    label: Ad Group / Ad Set
+    description: Ad Group (Google) or Ad Set (Facebook)
+
+  conversion_name:
+    sql: '"CONVERSION_NAME"'
+    label: Conversion Name
+    description: Name of the conversion action
+
+  # Hidden base columns for aggregation
+  spend:
+    sql: '"SPEND"'
+    hidden: true
+
+  impressions:
+    sql: '"IMPRESSIONS"'
+    hidden: true
+
+  clicks:
+    sql: '"CLICKS"'
+    hidden: true
+
+  conversions:
+    sql: '"CONVERSIONS"'
+    hidden: true
+
+  conversion_value:
+    sql: '"CONVERSION_VALUE"'
+    hidden: true
+
+measures:
+  # Row count
+  count:
+    description: Count of records
+    aggregate_type: count
+
+  # Base metrics
+  total_spend:
+    sql: ${spend}
+    label: Total Spend
+    format: usdcurrency_2
+    description: Total advertising spend across all platforms
+    aggregate_type: sum
+
+  total_impressions:
+    sql: ${impressions}
+    label: Total Impressions
+    format: number_0
+    description: Total number of ad impressions
+    aggregate_type: sum
+
+  total_clicks:
+    sql: ${clicks}
+    label: Total Clicks
+    format: number_0
+    description: Total number of ad clicks
+    aggregate_type: sum
+
+  total_conversions:
+    sql: ${conversions}
+    label: Total Conversions
+    format: number_2
+    description: Total number of conversions
+    aggregate_type: sum
+
+  total_conversion_value:
+    sql: ${conversion_value}
+    label: Total Conversion Value
+    format: usdcurrency_2
+    description: Total conversion value (Google only)
+    aggregate_type: sum
+
+  # Calculated metrics
+  ctr:
+    sql: ${total_clicks} / NULLIF(${total_impressions}, 0) * 100
+    label: CTR
+    format: percent_2
+    description: Click-through rate (clicks / impressions)
+
+  cpc:
+    sql: ${total_spend} / NULLIF(${total_clicks}, 0)
+    label: CPC
+    format: usdcurrency_2
+    description: Cost per click (spend / clicks)
+
+  cpm:
+    sql: ${total_spend} / NULLIF(${total_impressions}, 0) * 1000
+    label: CPM
+    format: usdcurrency_2
+    description: Cost per thousand impressions
+
+  cpa:
+    sql: ${total_spend} / NULLIF(${total_conversions}, 0)
+    label: CPA
+    format: usdcurrency_2
+    description: Cost per acquisition (spend / conversions)
+
+  roas:
+    sql: ${total_conversion_value} / NULLIF(${total_spend}, 0)
+    label: ROAS
+    format: number_2
+    description: Return on ad spend (Google data only)
+
+  conversion_rate:
+    sql: ${total_conversions} / NULLIF(${total_clicks}, 0) * 100
+    label: Conversion Rate
+    format: percent_2
+    description: Conversion rate (conversions / clicks)
+
+  # Count measures
+  campaign_count:
+    sql: ${campaign}
+    label: Campaign Count
+    format: number_0
+    description: Count of unique campaigns
+    aggregate_type: count_distinct
+
+  ad_group_count:
+    sql: ${ad_group}
+    label: Ad Group Count
+    format: number_0
+    description: Count of unique ad groups / ad sets
+    aggregate_type: count_distinct
+
+#The info below was pulled from your dbt repository and is read-only.
+dbt:
+  name: all_ads_performance
+  target_schema: PROD
+  config:
+    materialized: table
+  code: |-
+    {{ config(materialized='table') }}
+
+    -- Facebook Ads aggregated to Ad Set level
+    SELECT
+        date,
+        'Facebook' AS platform,
+        account,
+        campaign,
+        adset AS ad_group,
+        conversionname AS conversion_name,
+        SUM(spend) AS spend,
+        SUM(impressions) AS impressions,
+        SUM(clicks) AS clicks,
+        SUM(allconv) AS conversions,
+        NULL AS conversion_value
+    FROM {{ ref('facebook_ads_performance') }}
+    GROUP BY 1, 2, 3, 4, 5, 6
+
+    UNION ALL
+
+    -- Google Ads aggregated to Ad Group level
+    SELECT
+        date,
+        'Google' AS platform,
+        account,
+        campaign,
+        adgroup AS ad_group,
+        conversion_action_name AS conversion_name,
+        SUM(spend) AS spend,
+        SUM(impressions) AS impressions,
+        SUM(clicks) AS clicks,
+        SUM(conversions) AS conversions,
+        SUM(conversion_value) AS conversion_value
+    FROM {{ ref('google_ads_performance') }}
+    GROUP BY 1, 2, 3, 4, 5, 6
+    ORDER BY 1 DESC

@@ -1,0 +1,48 @@
+# Reference this view as omni_dbt__v_stg_google_keyword
+schema_label: ""
+
+schema: omni_dbt
+table_name: V_STG_GOOGLE_KEYWORD
+
+dimensions:
+  criterion_id:
+    sql: '"CRITERION_ID"'
+    format: ID
+
+  ad_group_id:
+    sql: '"AD_GROUP_ID"'
+    format: ID
+
+  keyword_text:
+    sql: '"KEYWORD_TEXT"'
+
+  keyword_match_type:
+    sql: '"KEYWORD_MATCH_TYPE"'
+
+measures:
+  count:
+    aggregate_type: count
+
+#The info below was pulled from your dbt repository and is read-only.
+dbt:
+  name: v_stg_google_keyword
+  target_schema: PROD
+  config:
+    materialized: view
+  code: |-
+    SELECT id as criterion_id
+             , ad_group_id
+             , keyword_text
+             , keyword_match_type
+        FROM (
+            SELECT id
+                 , ad_group_id
+                 , keyword_text
+                 , keyword_match_type
+                 , type
+                 , ROW_NUMBER() OVER (PARTITION BY id ORDER BY updated_at DESC) as rn
+            FROM FIVETRAN_DATABASE.GOOGLE_ADS_FM.AD_GROUP_CRITERION_HISTORY
+            WHERE type = 'KEYWORD'
+        )
+        WHERE rn = 1
+  referenced_by: [ int_google_spend, int_google_conversions ]

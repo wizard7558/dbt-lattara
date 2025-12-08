@@ -1,0 +1,76 @@
+# Reference this view as dbt_prod__all_spend_by_account
+catalog: DBT
+schema: PROD
+table_name: ALL_SPEND_BY_ACCOUNT
+
+dimensions:
+  date:
+    sql: '"DATE"'
+
+  platform:
+    sql: '"PLATFORM"'
+
+  account:
+    sql: '"ACCOUNT"'
+
+  campaign:
+    sql: '"CAMPAIGN"'
+
+  spend:
+    sql: '"SPEND"'
+
+  impressions:
+    sql: '"IMPRESSIONS"'
+
+  clicks:
+    sql: '"CLICKS"'
+
+measures:
+  count:
+    aggregate_type: count
+
+#The info below was pulled from your dbt repository and is read-only.
+dbt:
+  name: all_spend_by_account
+  target_schema: PROD
+  config:
+    materialized: table
+  code: |-
+    {{config(materialized = "table")}} 
+
+    select date
+         , 'Meta' as platform
+         , account
+         , campaign
+         , sum(spend) as spend
+         , sum(impressions) as impressions
+         , sum(clicks) as clicks
+    from {{ ref('facebook_ads_performance') }}
+    group by 1,2,3,4
+
+    union all
+
+    select date
+         , 'Google' as platform
+         , account
+         , campaign
+         , sum(spend) as spend
+         , sum(impressions) as impressions
+         , sum(clicks) as clicks
+    from {{ ref('google_ads_performance') }}
+    group by 1,2,3,4
+
+    union all
+
+    select date
+         , 'LinkedIn' as platform
+         , account
+         , campaign
+         , sum(spend) as spend
+         , sum(impressions) as impressions
+         , sum(clicks) as clicks
+    from {{ ref('linkedin_ads_performance') }}
+    where spend > 0 
+    group by 1,2,3,4
+
+    order by 1 desc, 2 asc, 5 desc

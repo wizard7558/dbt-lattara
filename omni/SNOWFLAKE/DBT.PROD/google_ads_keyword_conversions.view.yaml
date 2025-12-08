@@ -1,0 +1,48 @@
+# Reference this view as dbt_prod__google_ads_keyword_conversions
+catalog: DBT
+schema: PROD
+table_name: GOOGLE_ADS_KEYWORD_CONVERSIONS
+
+dimensions:
+  date:
+    sql: '"DATE"'
+
+  account:
+    sql: '"ACCOUNT"'
+
+  customer_id:
+    sql: '"CUSTOMER_ID"'
+    format: ID
+
+  campaign:
+    sql: '"CAMPAIGN"'
+
+  campaign_id:
+    sql: '"CAMPAIGN_ID"'
+    format: ID
+
+  adgroup:
+    sql: '"ADGROUP"'
+
+  ad_group_id:
+    sql: '"AD_GROUP_ID"'
+    format: ID
+
+  keyword:
+    sql: '"KEYWORD"'
+
+  match_type:
+    sql: '"MATCH_TYPE"'
+
+  conversion_action_name:
+    sql: '"CONVERSION_ACTION_NAME"'
+
+  conversions:
+    sql: '"CONVERSIONS"'
+
+  conversion_value:
+    sql: '"CONVERSION_VALUE"'
+
+measures:
+  count:
+    aggregate_type: count

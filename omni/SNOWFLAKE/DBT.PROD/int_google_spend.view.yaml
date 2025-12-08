@@ -1,0 +1,80 @@
+# Reference this view as dbt_prod__int_google_spend
+catalog: DBT
+schema: PROD
+table_name: INT_GOOGLE_SPEND
+
+dimensions:
+  date:
+    sql: '"DATE"'
+
+  account:
+    sql: '"ACCOUNT"'
+
+  customer_id:
+    sql: '"CUSTOMER_ID"'
+    format: ID
+
+  campaign:
+    sql: '"CAMPAIGN"'
+
+  campaign_id:
+    sql: '"CAMPAIGN_ID"'
+    format: ID
+
+  adgroup:
+    sql: '"ADGROUP"'
+
+  ad_group_id:
+    sql: '"AD_GROUP_ID"'
+    format: ID
+
+  keyword:
+    sql: '"KEYWORD"'
+
+  match_type:
+    sql: '"MATCH_TYPE"'
+
+  spend:
+    sql: '"SPEND"'
+
+  impressions:
+    sql: '"IMPRESSIONS"'
+
+  clicks:
+    sql: '"CLICKS"'
+
+measures:
+  count:
+    aggregate_type: count
+
+#The info below was pulled from your dbt repository and is read-only.
+dbt:
+  name: int_google_spend
+  target_schema: PROD
+  config:
+    materialized: view
+  code: |-
+    SELECT date
+            , acc.account_name as account
+            , kws.customer_id
+            , cam.campaign_name as campaign
+            , kws.campaign_id
+            , adg.ad_group_name as adgroup
+            , adg.ad_group_id
+            , kw.keyword_text as keyword
+            , kw.keyword_match_type as match_type
+            , sum(cost_micros)/1000000 as spend
+            , sum(impressions) as impressions
+            , sum(clicks) as clicks
+    FROM FIVETRAN_DATABASE.GOOGLE_ADS_FM.KEYWORD_STATS kws
+    LEFT JOIN {{ ref('v_stg_google_accounts') }} acc
+    on acc.customer_id = kws.customer_id
+    LEFT JOIN {{ ref('v_stg_google_campaigns') }} cam
+    on cam.campaign_id = kws.campaign_id
+    LEFT JOIN {{ ref('v_stg_google_adgroup') }} adg
+    on adg.ad_group_id = kws.ad_group_id
+    LEFT JOIN {{ ref('v_stg_google_keyword') }} kw
+    on kw.criterion_id = kws.ad_group_criterion_criterion_id
+    GROUP BY 1,2,3,4,5,6,7,8,9
+    ORDER BY 1 DESC
+  referenced_by: [ google_ads_performance ]

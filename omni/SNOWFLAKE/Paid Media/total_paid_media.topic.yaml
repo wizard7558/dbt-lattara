@@ -1,0 +1,47 @@
+# Total Paid Media Topic
+base_view: dbt_prod__all_ads_performance
+base_view_label: All Paid Media
+label: Total Paid Media
+group_label: Paid Media
+description: |
+  Combined advertising performance data across Facebook and Google at the 
+  ad group / ad set level. Use this topic for cross-platform analysis, 
+  total spend reporting, and unified performance metrics.
+
+joins: {}
+
+ai_context: |
+  This topic contains combined advertising data from Facebook and Google Ads
+  at the ad group / ad set level.
+
+  Key dimension for segmentation:
+  - platform: 'Facebook' or 'Google' to filter by ad platform
+  - ad_group: Ad Group (Google) or Ad Set (Facebook)
+
+  Data hierarchy:
+  - Platform > Account > Campaign > Ad Group/Ad Set
+
+  Key metrics available:
+  - total_spend: Total advertising spend in USD across all platforms
+  - total_impressions: Number of times ads were shown
+  - total_clicks: Number of clicks on ads
+  - total_conversions: Number of conversion events
+  - total_conversion_value: Revenue from conversions (Google only)
+  - ctr: Click-through rate (clicks / impressions)
+  - cpc: Cost per click (spend / clicks)
+  - cpm: Cost per thousand impressions
+  - cpa: Cost per acquisition (spend / conversions)
+  - roas: Return on ad spend (Google only, has conversion_value)
+
+  Common questions:
+  - What is our total spend across all platforms?
+  - Compare Facebook vs Google performance
+  - Which platform has the best CPA?
+  - Show me total spend by platform over time
+  - What is our blended CPC across all channels?
+  - Which campaigns have the highest spend?
+
+  Important notes:
+  - conversion_value and roas only available for Google data
+  - When comparing platforms, always include the platform dimension
+  - Ad Group (Google) = Ad Set (Facebook) for comparison purposes

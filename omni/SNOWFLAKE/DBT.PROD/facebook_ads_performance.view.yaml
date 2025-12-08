@@ -1,0 +1,306 @@
+# Reference this view as dbt_prod__facebook_ads_performance
+catalog: DBT
+schema: PROD
+table_name: FACEBOOK_ADS_PERFORMANCE
+
+dimensions:
+  # Compound primary key
+  primary_key:
+    sql: CONCAT(${date}, '-', ${ad_id}, '-', COALESCE(${conversionname}, 'none'))
+    hidden: true
+    primary_key: true
+
+  date:
+    sql: '"DATE"'
+    label: Date
+    timeframes: [ raw, date, week, month, quarter, year ]
+    convert_tz: false
+
+  account:
+    sql: '"ACCOUNT"'
+    label: Account
+
+  campaign:
+    sql: '"CAMPAIGN"'
+    label: Campaign
+
+  adset:
+    sql: '"ADSET"'
+    label: Ad Set
+
+  ad:
+    sql: '"AD"'
+    label: Ad
+
+  ad_id:
+    sql: '"AD_ID"'
+    label: Ad ID
+    format: ID
+
+  conversionname:
+    sql: '"CONVERSIONNAME"'
+    label: Conversion Name
+
+  funnel_stage:
+    sql: |
+      CASE
+        WHEN UPPER(${campaign}) LIKE '%BOFU%' THEN 'BOFU'
+        WHEN UPPER(${campaign}) LIKE '%MOFU%' THEN 'MOFU'
+        WHEN UPPER(${campaign}) LIKE '%TOFU%' THEN 'TOFU'
+        WHEN UPPER(${campaign}) LIKE '%RETARGET%' THEN 'Retargeting'
+        WHEN UPPER(${campaign}) LIKE '%REMARKETING%' THEN 'Retargeting'
+        WHEN UPPER(${campaign}) LIKE '%RTG%' THEN 'Retargeting'
+        WHEN UPPER(${campaign}) LIKE '%RTN%' THEN 'Retention'
+        WHEN UPPER(${campaign}) LIKE '%RETENTION%' THEN 'Retention'
+        WHEN UPPER(${campaign}) LIKE '%REENGAGE%' THEN 'Reengagement'
+        WHEN UPPER(${campaign}) LIKE '%WINBACK%' THEN 'Reengagement'
+        WHEN UPPER(${campaign}) LIKE '%PROSPECT%' THEN 'Prospecting'
+        WHEN UPPER(${campaign}) LIKE '%ACQ%' THEN 'Prospecting'
+        WHEN UPPER(${campaign}) LIKE '%AWARENESS%' THEN 'Awareness'
+        ELSE 'Unclassified'
+      END
+    description: Funnel stage derived from campaign naming convention (TOFU, MOFU,
+      BOFU, Prospecting, Retargeting, etc.)
+
+  geo_region:
+    sql: |
+      CASE
+        WHEN UPPER(${campaign}) LIKE '%_US_%' OR UPPER(${campaign}) LIKE '%_US %' OR UPPER(${campaign}) LIKE '% US %' THEN 'United States'
+        WHEN UPPER(${campaign}) LIKE '%_CA_%' OR UPPER(${campaign}) LIKE '%_CA %' OR UPPER(${campaign}) LIKE '% CA %' OR UPPER(${campaign}) LIKE '%CANADA%' THEN 'Canada'
+        WHEN UPPER(${campaign}) LIKE '%_UK_%' OR UPPER(${campaign}) LIKE '%_UK %' OR UPPER(${campaign}) LIKE '% UK %' THEN 'United Kingdom'
+        WHEN UPPER(${campaign}) LIKE '%_AU_%' OR UPPER(${campaign}) LIKE '%_AU %' THEN 'Australia'
+        WHEN UPPER(${campaign}) LIKE '%_BR_%' OR UPPER(${campaign}) LIKE '%_BR %' THEN 'Brazil'
+        WHEN UPPER(${campaign}) LIKE '%_DE_%' OR UPPER(${campaign}) LIKE '%_DE %' THEN 'Germany'
+        WHEN UPPER(${campaign}) LIKE '%_FR_%' OR UPPER(${campaign}) LIKE '%_FR %' OR UPPER(${campaign}) LIKE '%_FR_META%' THEN 'France'
+        WHEN UPPER(${campaign}) LIKE '%_IN_%' OR UPPER(${campaign}) LIKE '%_IN %' THEN 'India'
+        WHEN UPPER(${campaign}) LIKE '%_PH_%' OR UPPER(${campaign}) LIKE '%_PH %' THEN 'Philippines'
+        WHEN UPPER(${campaign}) LIKE '%_PK_%' OR UPPER(${campaign}) LIKE '%_PK %' THEN 'Pakistan'
+        WHEN UPPER(${campaign}) LIKE '%_VN_%' OR UPPER(${campaign}) LIKE '%_VN %' THEN 'Vietnam'
+        WHEN UPPER(${campaign}) LIKE '%NAMER%' THEN 'North America'
+        WHEN UPPER(${campaign}) LIKE '%EMEA%' THEN 'EMEA'
+        WHEN UPPER(${campaign}) LIKE '%APAC%' THEN 'APAC'
+        WHEN UPPER(${campaign}) LIKE '%LATAM%' THEN 'LATAM'
+        WHEN UPPER(${campaign}) LIKE '%ROW%' THEN 'Rest of World'
+        WHEN UPPER(${campaign}) LIKE '%INTL%' OR UPPER(${campaign}) LIKE '%INTERNATIONAL%' THEN 'International'
+        WHEN UPPER(${campaign}) LIKE '%COUNTRYTIER1%' OR UPPER(${campaign}) LIKE '%TIER1%' THEN 'Tier 1 Countries'
+        WHEN UPPER(${campaign}) LIKE '%COUNTRYTIER2%' OR UPPER(${campaign}) LIKE '%TIER2%' THEN 'Tier 2 Countries'
+        WHEN UPPER(${campaign}) LIKE '%TIER3%' THEN 'Tier 3 Countries'
+        ELSE 'Unclassified'
+      END
+    description: Geographic region or country derived from campaign naming convention
+
+  campaign_objective:
+    sql: |
+      CASE
+        WHEN UPPER(${campaign}) LIKE '%LEAD%GEN%' OR UPPER(${campaign}) LIKE '%LEADGEN%' OR UPPER(${campaign}) LIKE '%_LG_%' THEN 'Lead Generation'
+        WHEN UPPER(${campaign}) LIKE '%NATIVE%LEAD%' THEN 'Native Lead Form'
+        WHEN UPPER(${campaign}) LIKE '%CONVERSION%' OR UPPER(${campaign}) LIKE '%CONV%' OR UPPER(${campaign}) LIKE '%_WC_%' THEN 'Conversions'
+        WHEN UPPER(${campaign}) LIKE '%PURCHASE%' THEN 'Purchase'
+        WHEN UPPER(${campaign}) LIKE '%APP%INSTALL%' OR UPPER(${campaign}) LIKE '%INSTALL%BID%' THEN 'App Install'
+        WHEN UPPER(${campaign}) LIKE '%TRAFFIC%' OR UPPER(${campaign}) LIKE '%LPVIEW%' OR UPPER(${campaign}) LIKE '%LP_VIEW%' THEN 'Traffic'
+        WHEN UPPER(${campaign}) LIKE '%AWARENESS%' OR UPPER(${campaign}) LIKE '%REACH%' THEN 'Awareness'
+        WHEN UPPER(${campaign}) LIKE '%VIDEO%VIEW%' OR UPPER(${campaign}) LIKE '%THRUPLAY%' THEN 'Video Views'
+        WHEN UPPER(${campaign}) LIKE '%ENGAGEMENT%' OR UPPER(${campaign}) LIKE '%_ENG_%' THEN 'Engagement'
+        WHEN UPPER(${campaign}) LIKE '%WEBINAR%' THEN 'Webinar Registration'
+        WHEN UPPER(${campaign}) LIKE '%DEMO%' THEN 'Demo Request'
+        WHEN UPPER(${campaign}) LIKE '%SIGNUP%' OR UPPER(${campaign}) LIKE '%SIGN_UP%' OR UPPER(${campaign}) LIKE '%SIGN UP%' THEN 'Sign Up'
+        WHEN UPPER(${campaign}) LIKE '%REGISTRATION%' THEN 'Registration'
+        ELSE 'Unclassified'
+      END
+    description: Campaign objective derived from campaign naming convention
+
+  audience_type:
+    sql: |
+      CASE
+        WHEN UPPER(${campaign}) LIKE '%LAL%' OR UPPER(${campaign}) LIKE '%LOOKALIKE%' THEN 'Lookalike'
+        WHEN UPPER(${campaign}) LIKE '%INTEREST%' THEN 'Interest-Based'
+        WHEN UPPER(${campaign}) LIKE '%BROAD%' THEN 'Broad'
+        WHEN UPPER(${campaign}) LIKE '%CUSTOM%LIST%' OR UPPER(${campaign}) LIKE '%CUSTOMER%LIST%' THEN 'Customer List'
+        WHEN UPPER(${campaign}) LIKE '%CRM%' THEN 'CRM Audience'
+        WHEN UPPER(${campaign}) LIKE '%SITE%VISITOR%' OR UPPER(${campaign}) LIKE '%WEBSITE%VISITOR%' THEN 'Website Visitors'
+        WHEN UPPER(${campaign}) LIKE '%ENGAGER%' OR UPPER(${campaign}) LIKE '%ENGAGED%' THEN 'Engagers'
+        WHEN UPPER(${campaign}) LIKE '%PURCHASER%' OR UPPER(${campaign}) LIKE '%1X%PURCHASER%' THEN 'Past Purchasers'
+        WHEN UPPER(${campaign}) LIKE '%DPA%' OR UPPER(${campaign}) LIKE '%DABA%' OR UPPER(${campaign}) LIKE '%DYNAMIC%' THEN 'Dynamic/DPA'
+        WHEN UPPER(${campaign}) LIKE '%SAVED%' THEN 'Saved Audience'
+        ELSE 'Unclassified'
+      END
+    description: Audience targeting type derived from campaign naming convention
+
+  platform_placement:
+    sql: |
+      CASE
+        WHEN UPPER(${campaign}) LIKE '%IOS%' OR UPPER(${campaign}) LIKE '%SKAN%' THEN 'iOS'
+        WHEN UPPER(${campaign}) LIKE '%ANDROID%' THEN 'Android'
+        WHEN UPPER(${campaign}) LIKE '%DESKTOP%' THEN 'Desktop'
+        WHEN UPPER(${campaign}) LIKE '%MOBILE%' THEN 'Mobile'
+        WHEN UPPER(${campaign}) LIKE '%_IG_%' OR UPPER(${campaign}) LIKE '%INSTAGRAM%ONLY%' OR UPPER(${campaign}) LIKE '%IG_ONLY%' THEN 'Instagram Only'
+        WHEN UPPER(${campaign}) LIKE '%FACEBOOK%ONLY%' OR UPPER(${campaign}) LIKE '%FB_ONLY%' THEN 'Facebook Only'
+        WHEN UPPER(${campaign}) LIKE '%REELS%' THEN 'Reels'
+        WHEN UPPER(${campaign}) LIKE '%STORIES%' OR UPPER(${campaign}) LIKE '%STORY%' THEN 'Stories'
+        WHEN UPPER(${campaign}) LIKE '%FEED%' THEN 'Feed'
+        ELSE 'All Placements'
+      END
+    description: Platform or placement type derived from campaign naming convention
+
+  budget_optimization_type:
+    sql: |
+      CASE
+        WHEN UPPER(${campaign}) LIKE '%ASC%' OR UPPER(${campaign}) LIKE '%ADVANTAGE+%' OR UPPER(${campaign}) LIKE '%ADV+%' OR UPPER(${campaign}) LIKE '%ADVPL%' THEN 'Advantage+ Shopping'
+        WHEN UPPER(${campaign}) LIKE '%CBO%' THEN 'Campaign Budget Optimization'
+        WHEN UPPER(${campaign}) LIKE '%ABO%' THEN 'Ad Set Budget Optimization'
+        WHEN UPPER(${campaign}) LIKE '%AAA%' THEN 'Automated App Ads'
+        WHEN UPPER(${campaign}) LIKE '%ASB%' THEN 'Ad Set Budget'
+        ELSE 'Unclassified'
+      END
+    description: Meta budget optimization type derived from campaign naming convention
+
+  promotional_type:
+    sql: |
+      CASE
+        WHEN UPPER(${campaign}) LIKE '%BFCM%' OR UPPER(${campaign}) LIKE '%BLACK%FRIDAY%' OR UPPER(${campaign}) LIKE '%CYBER%MONDAY%' THEN 'BFCM'
+        WHEN UPPER(${campaign}) LIKE '%HOLIDAY%' OR UPPER(${campaign}) LIKE '%CHRISTMAS%' OR UPPER(${campaign}) LIKE '%NYE%' OR UPPER(${campaign}) LIKE '%NEW%YEAR%' THEN 'Holiday'
+        WHEN UPPER(${campaign}) LIKE '%VALENTINE%' THEN 'Valentines Day'
+        WHEN UPPER(${campaign}) LIKE '%JULY%4%' OR UPPER(${campaign}) LIKE '%LDW%' OR UPPER(${campaign}) LIKE '%LABOR%DAY%' THEN 'Summer Holiday'
+        WHEN UPPER(${campaign}) LIKE '%BACK%TO%SCHOOL%' THEN 'Back to School'
+        WHEN UPPER(${campaign}) LIKE '%WEBINAR%' THEN 'Webinar'
+        WHEN UPPER(${campaign}) LIKE '%LAUNCH%' THEN 'Product Launch'
+        WHEN UPPER(${campaign}) LIKE '%SALE%' OR UPPER(${campaign}) LIKE '%PROMO%' THEN 'Promotional'
+        WHEN UPPER(${campaign}) LIKE '%EVERGREEN%' OR UPPER(${campaign}) LIKE '%BAU%' THEN 'Evergreen/BAU'
+        ELSE 'Standard'
+      END
+    description: Promotional or seasonal campaign type derived from campaign naming
+      convention
+
+  industry_vertical:
+    sql: |
+      CASE
+        WHEN UPPER(${campaign}) LIKE '%REAL%ESTATE%' THEN 'Real Estate'
+        WHEN UPPER(${campaign}) LIKE '%HVAC%' THEN 'HVAC'
+        WHEN UPPER(${campaign}) LIKE '%PLUMBING%' THEN 'Plumbing'
+        WHEN UPPER(${campaign}) LIKE '%ELECTRICAL%' THEN 'Electrical'
+        WHEN UPPER(${campaign}) LIKE '%CONSTRUCTION%' THEN 'Construction'
+        WHEN UPPER(${campaign}) LIKE '%CLEANING%' THEN 'Cleaning Services'
+        WHEN UPPER(${campaign}) LIKE '%PAINTING%' THEN 'Painting'
+        WHEN UPPER(${campaign}) LIKE '%PEST%CONTROL%' THEN 'Pest Control'
+        WHEN UPPER(${campaign}) LIKE '%HOME%IMPROVEMENT%' THEN 'Home Improvement'
+        WHEN UPPER(${campaign}) LIKE '%HOME%INSPECTION%' THEN 'Home Inspection'
+        WHEN UPPER(${campaign}) LIKE '%YARD%SERVICE%' OR UPPER(${campaign}) LIKE '%LANDSCAP%' THEN 'Yard Services'
+        WHEN UPPER(${campaign}) LIKE '%TRANSPORTATION%' THEN 'Transportation'
+        WHEN UPPER(${campaign}) LIKE '%CATERING%' OR UPPER(${campaign}) LIKE '%FOOD%SERVICE%' THEN 'Food Services'
+        WHEN UPPER(${campaign}) LIKE '%AUTO%DETAIL%' THEN 'Auto Detailing'
+        WHEN UPPER(${campaign}) LIKE '%PROPERTY%MANAGEMENT%' THEN 'Property Management'
+        WHEN UPPER(${campaign}) LIKE '%TRADES%' THEN 'Trades'
+        WHEN UPPER(${campaign}) LIKE '%SMALL%BUSINESS%' OR UPPER(${campaign}) LIKE '%SMB%' THEN 'Small Business'
+        ELSE NULL
+      END
+    description: Industry vertical targeting derived from campaign naming convention
+      (primarily Wrapmate campaigns)
+
+  attribution_window:
+    sql: |
+      CASE
+        WHEN UPPER(${campaign}) LIKE '%1DC%' OR UPPER(${campaign}) LIKE '%1D%CLICK%' THEN '1-Day Click'
+        WHEN UPPER(${campaign}) LIKE '%7DC%' OR UPPER(${campaign}) LIKE '%7D%CLICK%' THEN '7-Day Click'
+        WHEN UPPER(${campaign}) LIKE '%1DV%' OR UPPER(${campaign}) LIKE '%1D%VIEW%' THEN '1-Day View'
+        WHEN UPPER(${campaign}) LIKE '%CLICK%ONLY%' THEN 'Click Only'
+        ELSE 'Default'
+      END
+    description: Attribution window setting derived from campaign naming convention
+
+  # Hidden base columns for aggregation
+  spend:
+    sql: '"SPEND"'
+    hidden: true
+
+  impressions:
+    sql: '"IMPRESSIONS"'
+    hidden: true
+
+  clicks:
+    sql: '"CLICKS"'
+    hidden: true
+
+  allconv:
+    sql: '"ALLCONV"'
+    hidden: true
+
+measures:
+  count:
+    aggregate_type: count
+
+  total_spend:
+    sql: ${spend}
+    label: Total Spend
+    format: usdcurrency_2
+    aggregate_type: sum
+
+  total_impressions:
+    sql: ${impressions}
+    label: Total Impressions
+    format: number_0
+    aggregate_type: sum
+
+  total_clicks:
+    sql: ${clicks}
+    label: Total Clicks
+    format: number_0
+    aggregate_type: sum
+
+  total_conversions:
+    sql: ${allconv}
+    label: Total Conversions
+    format: number_2
+    aggregate_type: sum
+
+  ctr:
+    sql: ${total_clicks} / NULLIF(${total_impressions}, 0) * 100
+    label: CTR
+    format: percent_2
+
+  cpc:
+    sql: ${total_spend} / NULLIF(${total_clicks}, 0)
+    label: CPC
+    format: usdcurrency_2
+
+  cpm:
+    sql: ${total_spend} / NULLIF(${total_impressions}, 0) * 1000
+    label: CPM
+    format: usdcurrency_2
+
+  cpa:
+    sql: ${total_spend} / NULLIF(${total_conversions}, 0)
+    label: CPA
+    format: usdcurrency_2
+
+  conversion_rate:
+    sql: ${total_conversions} / NULLIF(${total_clicks}, 0) * 100
+    label: Conversion Rate
+    format: percent_2
+
+#The info below was pulled from your dbt repository and is read-only.
+dbt:
+  name: facebook_ads_performance
+  target_schema: PROD
+  config:
+    materialized: table
+  code: |-
+    {{config(materialized = "table")}} 
+
+    SELECT CAST(DATE AS DATE) AS DATE
+         , ACCOUNT
+         , CAMPAIGN
+         , ADSET
+         , AD
+         , AD_ID
+         , CONVERSIONNAME
+         , SPEND_RAW/DIVIDEND AS SPEND
+         , IMPRESSIONS_RAW/DIVIDEND AS IMPRESSIONS
+         , CLICKS_RAW/DIVIDEND AS CLICKS
+         , ALLCONV
+    FROM {{ ref('int_facebook_conversions') }}
+    ORDER BY DATE DESC
+         , CAMPAIGN ASC
+         , ADSET ASC
+         , AD ASC
+         , CONVERSIONNAME ASC
+  referenced_by: [ all_ads_performance, all_spend_by_account ]

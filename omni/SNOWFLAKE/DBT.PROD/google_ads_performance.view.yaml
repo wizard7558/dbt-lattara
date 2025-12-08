@@ -1,0 +1,204 @@
+# Reference this view as dbt_prod__google_ads_performance
+catalog: DBT
+schema: PROD
+table_name: GOOGLE_ADS_PERFORMANCE
+
+dimensions:
+  # Compound primary key
+  primary_key:
+    sql: CONCAT(${date}, '-', ${ad_group_id}, '-', COALESCE(${keyword}, 'none'),
+      '-', COALESCE(${conversion_action_name}, 'none'))
+    hidden: true
+    primary_key: true
+
+  # Date dimension
+  date:
+    sql: '"DATE"'
+    label: Date
+    timeframes: [ raw, date, week, month, quarter, year ]
+    convert_tz: false
+
+  # Hierarchy dimensions
+  account:
+    sql: '"ACCOUNT"'
+    label: Account
+    description: Google Ads account name
+
+  customer_id:
+    sql: '"CUSTOMER_ID"'
+    label: Customer ID
+    description: Google Ads customer ID
+
+  campaign:
+    sql: '"CAMPAIGN"'
+    label: Campaign
+    description: Google Ads campaign name
+
+  campaign_id:
+    sql: '"CAMPAIGN_ID"'
+    label: Campaign ID
+    description: Unique identifier for the campaign
+
+  adgroup:
+    sql: '"ADGROUP"'
+    label: Ad Group
+    description: Google Ads ad group name
+
+  ad_group_id:
+    sql: '"AD_GROUP_ID"'
+    label: Ad Group ID
+    description: Unique identifier for the ad group
+
+  keyword:
+    sql: '"KEYWORD"'
+    label: Keyword
+    description: Keyword text
+
+  match_type:
+    sql: '"MATCH_TYPE"'
+    label: Match Type
+    description: Keyword match type (Broad, Phrase, Exact)
+
+  conversion_action_name:
+    sql: '"CONVERSION_ACTION_NAME"'
+    label: Conversion Action Name
+    description: Name of the conversion action
+
+  # Hidden base columns - MUST be dimensions so measures can aggregate them
+  spend:
+    sql: '"SPEND"'
+    hidden: true
+
+  impressions:
+    sql: '"IMPRESSIONS"'
+    hidden: true
+
+  clicks:
+    sql: '"CLICKS"'
+    hidden: true
+
+  conversions:
+    sql: '"CONVERSIONS"'
+    hidden: true
+
+  conversion_value:
+    sql: '"CONVERSION_VALUE"'
+    hidden: true
+
+measures:
+  # Row count
+  count:
+    description: Count of records
+    aggregate_type: count
+
+  # Base metrics - these reference DIMENSIONS above
+  total_spend:
+    sql: ${spend}
+    label: Total Spend
+    format: usdcurrency_2
+    description: Total advertising spend
+    aggregate_type: sum
+
+  total_impressions:
+    sql: ${impressions}
+    label: Total Impressions
+    format: number_0
+    description: Total number of ad impressions
+    aggregate_type: sum
+
+  total_clicks:
+    sql: ${clicks}
+    label: Total Clicks
+    format: number_0
+    description: Total number of ad clicks
+    aggregate_type: sum
+
+  total_conversions:
+    sql: ${conversions}
+    label: Total Conversions
+    format: number_2
+    description: Total number of conversions
+    aggregate_type: sum
+
+  total_conversion_value:
+    sql: ${conversion_value}
+    label: Total Conversion Value
+    format: usdcurrency_2
+    description: Total conversion value (revenue)
+    aggregate_type: sum
+
+  # Calculated metrics - these reference other measures (no aggregate_type needed)
+  ctr:
+    sql: ${total_clicks} / NULLIF(${total_impressions}, 0) * 100
+    label: CTR
+    format: percent_2
+    description: Click-through rate (clicks / impressions)
+
+  cpc:
+    sql: ${total_spend} / NULLIF(${total_clicks}, 0)
+    label: CPC
+    format: usdcurrency_2
+    description: Cost per click (spend / clicks)
+
+  cpm:
+    sql: ${total_spend} / NULLIF(${total_impressions}, 0) * 1000
+    label: CPM
+    format: usdcurrency_2
+    description: Cost per thousand impressions
+
+  cpa:
+    sql: ${total_spend} / NULLIF(${total_conversions}, 0)
+    label: CPA
+    format: usdcurrency_2
+    description: Cost per acquisition (spend / conversions)
+
+  roas:
+    sql: ${total_conversion_value} / NULLIF(${total_spend}, 0)
+    label: ROAS
+    format: number_2
+    description: Return on ad spend (revenue / spend)
+
+  conversion_rate:
+    sql: ${total_conversions} / NULLIF(${total_clicks}, 0) * 100
+    label: Conversion Rate
+    format: percent_2
+    description: Conversion rate (conversions / clicks)
+
+#The info below was pulled from your dbt repository and is read-only.
+dbt:
+  name: google_ads_performance
+  target_schema: PROD
+  config:
+    materialized: table
+  code: |-
+    {{config(materialized = "table")}} 
+
+    select
+      s.date,
+      s.account,
+      s.customer_id,
+      s.campaign,
+      s.campaign_id,
+      s.adgroup,
+      s.ad_group_id,
+      s.keyword,
+      s.match_type,
+      s.spend,
+      s.impressions,
+      s.clicks,
+      c.conversion_action_name,
+      c.conversions,
+      c.conversion_value,
+      div0(s.spend, s.clicks) as cpc,
+      div0(s.clicks, s.impressions) * 100 as ctr,
+      div0(s.spend, c.conversions) as cpa,
+      div0(c.conversion_value, s.spend) as roas
+    from {{ ref('int_google_spend') }} s
+    left join {{ ref('int_google_conversions') }} c
+      on s.date = c.date
+      and s.campaign_id = c.campaign_id
+      and s.ad_group_id = c.ad_group_id
+      and s.keyword = c.keyword
+      and s.match_type = c.match_type
+    order by 1 desc, 2, 3, 4, 5, 6, 7
+  referenced_by: [ all_ads_performance, all_spend_by_account ]

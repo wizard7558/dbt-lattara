@@ -1,0 +1,72 @@
+# Reference this view as omni_dbt__facebook_ads_performance
+schema_label: ""
+
+schema: omni_dbt
+table_name: FACEBOOK_ADS_PERFORMANCE
+
+dimensions:
+  date:
+    sql: '"DATE"'
+
+  account:
+    sql: '"ACCOUNT"'
+
+  campaign:
+    sql: '"CAMPAIGN"'
+
+  adset:
+    sql: '"ADSET"'
+
+  ad:
+    sql: '"AD"'
+
+  ad_id:
+    sql: '"AD_ID"'
+    format: ID
+
+  conversionname:
+    sql: '"CONVERSIONNAME"'
+
+  spend:
+    sql: '"SPEND"'
+
+  impressions:
+    sql: '"IMPRESSIONS"'
+
+  clicks:
+    sql: '"CLICKS"'
+
+  allconv:
+    sql: '"ALLCONV"'
+
+measures:
+  count:
+    aggregate_type: count
+
+#The info below was pulled from your dbt repository and is read-only.
+dbt:
+  name: facebook_ads_performance
+  target_schema: PROD
+  config:
+    materialized: table
+  code: |-
+    {{config(materialized = "table")}} 
+
+    SELECT CAST(DATE AS DATE) AS DATE
+         , ACCOUNT
+         , CAMPAIGN
+         , ADSET
+         , AD
+         , AD_ID
+         , CONVERSIONNAME
+         , SPEND_RAW/DIVIDEND AS SPEND
+         , IMPRESSIONS_RAW/DIVIDEND AS IMPRESSIONS
+         , CLICKS_RAW/DIVIDEND AS CLICKS
+         , ALLCONV
+    FROM {{ ref('int_facebook_conversions') }}
+    ORDER BY DATE DESC
+         , CAMPAIGN ASC
+         , ADSET ASC
+         , AD ASC
+         , CONVERSIONNAME ASC
+  referenced_by: [ all_ads_performance, all_spend_by_account ]

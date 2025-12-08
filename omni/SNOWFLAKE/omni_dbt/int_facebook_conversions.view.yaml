@@ -1,0 +1,79 @@
+# Reference this view as omni_dbt__int_facebook_conversions
+schema_label: ""
+
+schema: omni_dbt
+table_name: INT_FACEBOOK_CONVERSIONS
+
+dimensions:
+  date:
+    sql: '"DATE"'
+
+  account:
+    sql: '"ACCOUNT"'
+
+  campaign:
+    sql: '"CAMPAIGN"'
+
+  adset:
+    sql: '"ADSET"'
+
+  ad:
+    sql: '"AD"'
+
+  ad_id:
+    sql: '"AD_ID"'
+    format: ID
+
+  conversionname:
+    sql: '"CONVERSIONNAME"'
+
+  dividend:
+    sql: '"DIVIDEND"'
+
+  spend_raw:
+    sql: '"SPEND_RAW"'
+
+  impressions_raw:
+    sql: '"IMPRESSIONS_RAW"'
+
+  clicks_raw:
+    sql: '"CLICKS_RAW"'
+
+  allconv:
+    sql: '"ALLCONV"'
+
+measures:
+  count:
+    aggregate_type: count
+
+#The info below was pulled from your dbt repository and is read-only.
+dbt:
+  name: int_facebook_conversions
+  target_schema: PROD
+  config:
+    materialized: view
+  code: |-
+    SELECT CAST(F.DATE AS DATE) AS DATE
+         , G.ACCOUNT
+         , G.CAMPAIGN
+         , G.ADSET
+         , G.AD
+         , F.AD_ID AS AD_ID
+         , F.ACTION_TYPE AS CONVERSIONNAME
+         , C.CNT AS DIVIDEND
+         , SUM(G.SPEND) AS SPEND_RAW
+         , SUM(G.IMPRESSIONS) IMPRESSIONS_RAW
+         , SUM(G.CLICKS) AS CLICKS_RAW
+         , SUM(COALESCE(VALUE, 0)) AS ALLCONV
+    FROM FIVETRAN_DATABASE.FACEBOOK_ADS.ADS_INSIGHTS_ACTIONS F
+    JOIN {{ ref('v_stg_facebook_spend') }} G ON F.AD_ID = G.AD_ID AND F.DATE = G.DATE
+    JOIN {{ ref('v_stg_facebook_distinct_actions') }} C ON F.DATE = C.DATE AND F.AD_ID = C.AD_ID
+    GROUP BY F.DATE
+         , G.ACCOUNT
+         , G.CAMPAIGN
+         , G.ADSET
+         , G.AD
+         , F.AD_ID
+         , F.ACTION_TYPE
+         , C.CNT
+  referenced_by: [ facebook_ads_performance ]
