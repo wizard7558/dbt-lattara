@@ -1,0 +1,37 @@
+# Facebook Ads Performance Topic
+base_view: dbt_prod__facebook_ads_performance
+base_view_label: Facebook Ads
+label: Facebook Ads Performance
+group_label: Paid Media
+description: |
+  Facebook and Instagram advertising performance data including spend, impressions, 
+  clicks, and conversions at the ad level. Use this topic to analyze campaign 
+  performance, optimize ad spend, and track conversion metrics.
+
+joins: {}
+
+ai_context: |
+  This topic contains Facebook and Instagram advertising performance data.
+
+  Key metrics available:
+  - total_spend: Total advertising spend in USD
+  - total_impressions: Number of times ads were shown
+  - total_clicks: Number of clicks on ads
+  - total_conversions: Number of conversion events
+  - ctr: Click-through rate (clicks / impressions)
+  - cpc: Cost per click (spend / clicks)
+  - cpm: Cost per thousand impressions
+  - cpa: Cost per acquisition (spend / conversions)
+  - conversion_rate: Conversions / clicks
+
+  Data hierarchy:
+  - Account > Campaign > Ad Set > Ad
+
+  Common questions:
+  - What is our total spend by campaign?
+  - Which ad sets have the best CTR?
+  - What is our average CPA by month?
+  - Show me spend trends over time
+
+  When asked about performance, default to using total_spend, total_clicks, 
+  and ctr. For conversion analysis, use total_conversions and cpa.
