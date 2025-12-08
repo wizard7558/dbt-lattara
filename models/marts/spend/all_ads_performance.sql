@@ -18,19 +18,20 @@ GROUP BY 1, 2, 3, 4, 5, 6
 
 UNION ALL
 
--- Google Ads aggregated to Ad Group level
+-- Google Ads at Campaign level (no ad_group to prevent fan-out)
 SELECT
     date,
     'Google' AS platform,
     account,
     campaign,
-    adgroup AS ad_group,
-    conversion_action_name AS conversion_name,
+    NULL AS ad_group,
+    NULL AS conversion_name,
     SUM(spend) AS spend,
     SUM(impressions) AS impressions,
     SUM(clicks) AS clicks,
     SUM(conversions) AS conversions,
     SUM(conversion_value) AS conversion_value
 FROM {{ ref('google_ads_performance') }}
-GROUP BY 1, 2, 3, 4, 5, 6
+GROUP BY 1, 2, 3, 4
+
 ORDER BY 1 DESC
