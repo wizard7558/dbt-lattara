@@ -1,0 +1,24 @@
+# Google Ads Ad Group Performance Topic
+base_view: prod__google_ads_adgroup_performance
+label: Google Ads - Ad Groups
+group_label: Google Ads
+
+description: |
+  Ad group-level Google Ads performance with conversion action detail.
+  Covers Search, Demand Gen, and Video campaigns (90% spend coverage).
+  Performance Max excluded as it has no ad groups.
+
+ai_context: |
+  Use this topic for ad group-level Google Ads analysis.
+  Includes Search, Demand Gen, and Video campaigns only.
+  Performance Max campaigns are excluded (no ad groups in PMax).
+  Each row has date, ad group, and conversion action. Sum spend for totals.
+  For campaign-level totals including PMax, use the Campaign topic.
+  For keyword-level detail, use the Keyword topic.
+
+default_filters:
+  prod__google_ads_adgroup_performance.date:
+    time_for_duration: [30 days ago, 30 days]
+
+fields:
+  - prod__google_ads_adgroup_performance.*
