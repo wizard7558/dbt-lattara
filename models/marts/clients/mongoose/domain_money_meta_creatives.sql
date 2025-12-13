@@ -11,8 +11,7 @@ SELECT
     SUM(spend) AS spend,
     SUM(impressions) AS impressions,
     SUM(clicks) AS clicks,
-    SUM(CASE WHEN conversionname = 'schedule_total' THEN allconv ELSE 0 END) AS schedule_total,
-    SUM(allconv) AS total_conversions
+    SUM(CASE WHEN conversionname = 'schedule_total' THEN allconv ELSE 0 END) AS MQL,
 FROM {{ ref('facebook_ads_performance') }}
 WHERE account = 'Domain Money Ad Account'
 GROUP BY 1, 2, 3, 4, 5, 6
