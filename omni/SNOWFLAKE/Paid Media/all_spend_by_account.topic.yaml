@@ -17,32 +17,32 @@ joins: {}
 ai_context: |
   This topic contains spend data across all advertising platforms (Meta, Google, LinkedIn).
   No conversion data in this model - use for spend/traffic analysis and projections only.
-  
+
   TRAFFIC METRICS:
   - total_spend, total_impressions, total_clicks, ctr, cpc, cpm
-  
+
   WEEK METRICS:
   - wtd_spend: Week to date spend
   - last_week_spend: Previous full week spend
   - week_projection: Projected full week based on WTD pace
   - wow_change: Week over week percent change
-  
+
   MONTH METRICS:
   - mtd_spend: Month to date spend
   - last_month_spend: Previous full month spend
   - month_projection: Projected full month based on MTD pace
   - mom_change: Month over month percent change
-  
+
   QUARTER METRICS:
   - qtd_spend: Quarter to date spend
   - last_quarter_spend: Previous full quarter spend
   - quarter_projection: Projected full quarter based on QTD pace
   - qoq_change: Quarter over quarter percent change
-  
+
   KEY DIMENSION:
   - platform: 'Meta', 'Google', or 'LinkedIn'
-  
+
   Data hierarchy: Platform > Account > Campaign
-  
+
   Use this topic for budget pacing, spend projections, and cross-platform spend analysis.
   For conversion metrics, use the platform-specific topics or Total Paid Media topic.

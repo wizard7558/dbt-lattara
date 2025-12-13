@@ -38,27 +38,35 @@ dimensions:
 
   # Hidden period spend columns for calculations
   wtd_spend_value:
-    sql: CASE WHEN "DATE" >= DATE_TRUNC('week', CURRENT_DATE()) THEN "SPEND" ELSE 0 END
+    sql: CASE WHEN "DATE" >= DATE_TRUNC('week', CURRENT_DATE()) THEN "SPEND" ELSE 0
+      END
     hidden: true
 
   last_week_spend_value:
-    sql: CASE WHEN "DATE" >= DATE_TRUNC('week', CURRENT_DATE()) - INTERVAL '7 days' AND "DATE" < DATE_TRUNC('week', CURRENT_DATE()) THEN "SPEND" ELSE 0 END
+    sql: CASE WHEN "DATE" >= DATE_TRUNC('week', CURRENT_DATE()) - INTERVAL '7 days'
+      AND "DATE" < DATE_TRUNC('week', CURRENT_DATE()) THEN "SPEND" ELSE 0 END
     hidden: true
 
   mtd_spend_value:
-    sql: CASE WHEN "DATE" >= DATE_TRUNC('month', CURRENT_DATE()) THEN "SPEND" ELSE 0 END
+    sql: CASE WHEN "DATE" >= DATE_TRUNC('month', CURRENT_DATE()) THEN "SPEND" ELSE 0
+      END
     hidden: true
 
   last_month_spend_value:
-    sql: CASE WHEN "DATE" >= DATE_TRUNC('month', CURRENT_DATE()) - INTERVAL '1 month' AND "DATE" < DATE_TRUNC('month', CURRENT_DATE()) THEN "SPEND" ELSE 0 END
+    sql: CASE WHEN "DATE" >= DATE_TRUNC('month', CURRENT_DATE()) - INTERVAL '1
+      month' AND "DATE" < DATE_TRUNC('month', CURRENT_DATE()) THEN "SPEND" ELSE
+      0 END
     hidden: true
 
   qtd_spend_value:
-    sql: CASE WHEN "DATE" >= DATE_TRUNC('quarter', CURRENT_DATE()) THEN "SPEND" ELSE 0 END
+    sql: CASE WHEN "DATE" >= DATE_TRUNC('quarter', CURRENT_DATE()) THEN "SPEND" ELSE
+      0 END
     hidden: true
 
   last_quarter_spend_value:
-    sql: CASE WHEN "DATE" >= DATE_TRUNC('quarter', CURRENT_DATE()) - INTERVAL '3 months' AND "DATE" < DATE_TRUNC('quarter', CURRENT_DATE()) THEN "SPEND" ELSE 0 END
+    sql: CASE WHEN "DATE" >= DATE_TRUNC('quarter', CURRENT_DATE()) - INTERVAL '3
+      months' AND "DATE" < DATE_TRUNC('quarter', CURRENT_DATE()) THEN "SPEND"
+      ELSE 0 END
     hidden: true
 
 measures:
@@ -103,8 +111,8 @@ measures:
   wtd_spend:
     sql: ${wtd_spend_value}
     label: WTD Spend
-    description: Week to date spend (current week)
     format: usdcurrency_2
+    description: Week to date spend (current week)
     aggregate_type: sum
 
   last_week_spend:
@@ -114,23 +122,24 @@ measures:
     aggregate_type: sum
 
   week_projection:
-    sql: ${wtd_spend} / NULLIF(DATEDIFF('day', DATE_TRUNC('week', CURRENT_DATE()), CURRENT_DATE()) + 1, 0) * 7
+    sql: ${wtd_spend} / NULLIF(DATEDIFF('day', DATE_TRUNC('week', CURRENT_DATE()),
+      CURRENT_DATE()) + 1, 0) * 7
     label: Week Projection
-    description: Projected spend for full week based on WTD pace
     format: usdcurrency_2
+    description: Projected spend for full week based on WTD pace
 
   wow_change:
     sql: (${wtd_spend} - ${last_week_spend}) / NULLIF(${last_week_spend}, 0) * 100
     label: WoW Change %
-    description: Week over week spend change
     format: percent_2
+    description: Week over week spend change
 
   # Month metrics
   mtd_spend:
     sql: ${mtd_spend_value}
     label: MTD Spend
-    description: Month to date spend (current month)
     format: usdcurrency_2
+    description: Month to date spend (current month)
     aggregate_type: sum
 
   last_month_spend:
@@ -140,23 +149,25 @@ measures:
     aggregate_type: sum
 
   month_projection:
-    sql: ${mtd_spend} / NULLIF(DATEDIFF('day', DATE_TRUNC('month', CURRENT_DATE()), CURRENT_DATE()) + 1, 0) * DATEDIFF('day', DATE_TRUNC('month', CURRENT_DATE()), LAST_DAY(CURRENT_DATE())) + 1
+    sql: ${mtd_spend} / NULLIF(DATEDIFF('day', DATE_TRUNC('month', CURRENT_DATE()),
+      CURRENT_DATE()) + 1, 0) * DATEDIFF('day', DATE_TRUNC('month',
+      CURRENT_DATE()), LAST_DAY(CURRENT_DATE())) + 1
     label: Month Projection
-    description: Projected spend for full month based on MTD pace
     format: usdcurrency_2
+    description: Projected spend for full month based on MTD pace
 
   mom_change:
     sql: (${mtd_spend} - ${last_month_spend}) / NULLIF(${last_month_spend}, 0) * 100
     label: MoM Change %
-    description: Month over month spend change
     format: percent_2
+    description: Month over month spend change
 
   # Quarter metrics
   qtd_spend:
     sql: ${qtd_spend_value}
     label: QTD Spend
-    description: Quarter to date spend (current quarter)
     format: usdcurrency_2
+    description: Quarter to date spend (current quarter)
     aggregate_type: sum
 
   last_quarter_spend:
@@ -166,16 +177,20 @@ measures:
     aggregate_type: sum
 
   quarter_projection:
-    sql: ${qtd_spend} / NULLIF(DATEDIFF('day', DATE_TRUNC('quarter', CURRENT_DATE()), CURRENT_DATE()) + 1, 0) * DATEDIFF('day', DATE_TRUNC('quarter', CURRENT_DATE()), LAST_DAY(DATEADD('month', 2, DATE_TRUNC('quarter', CURRENT_DATE())))) + 1
+    sql: ${qtd_spend} / NULLIF(DATEDIFF('day', DATE_TRUNC('quarter',
+      CURRENT_DATE()), CURRENT_DATE()) + 1, 0) * DATEDIFF('day',
+      DATE_TRUNC('quarter', CURRENT_DATE()), LAST_DAY(DATEADD('month', 2,
+      DATE_TRUNC('quarter', CURRENT_DATE())))) + 1
     label: Quarter Projection
-    description: Projected spend for full quarter based on QTD pace
     format: usdcurrency_2
+    description: Projected spend for full quarter based on QTD pace
 
   qoq_change:
-    sql: (${qtd_spend} - ${last_quarter_spend}) / NULLIF(${last_quarter_spend}, 0) * 100
+    sql: (${qtd_spend} - ${last_quarter_spend}) / NULLIF(${last_quarter_spend}, 0) *
+      100
     label: QoQ Change %
-    description: Quarter over quarter spend change
     format: percent_2
+    description: Quarter over quarter spend change
 
   # Count metrics
   campaign_count:
