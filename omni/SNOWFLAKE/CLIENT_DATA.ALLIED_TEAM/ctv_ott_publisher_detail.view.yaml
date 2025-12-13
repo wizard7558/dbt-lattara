@@ -1,0 +1,64 @@
+# Reference this view as client_data_allied_team__ctv_ott_publisher_detail
+catalog: CLIENT_DATA
+schema: ALLIED_TEAM
+table_name: CTV_OTT_PUBLISHER_DETAIL
+
+dimensions:
+  date:
+    sql: '"DATE"'
+
+  media_type:
+    sql: '"MEDIA_TYPE"'
+
+  paid_organic:
+    sql: '"PAID_ORGANIC"'
+
+  currency:
+    sql: '"CURRENCY"'
+
+  clicks:
+    sql: '"CLICKS"'
+
+  campaign_name:
+    sql: '"CAMPAIGN_NAME"'
+
+  creative_name:
+    sql: '"CREATIVE_NAME"'
+
+  line_name:
+    sql: '"LINE_NAME"'
+
+  line_id:
+    sql: '"LINE_ID"'
+    format: ID
+
+  video_complete:
+    sql: '"VIDEO_COMPLETE"'
+
+  publisher:
+    sql: '"PUBLISHER"'
+
+  completions:
+    sql: '"COMPLETIONS"'
+
+  reach_jl:
+    sql: '"REACH_JL"'
+
+  reach:
+    sql: '"REACH"'
+
+  impressions:
+    sql: '"IMPRESSIONS"'
+
+  creative:
+    sql: '"CREATIVE"'
+
+  vcr:
+    sql: '"VCR"'
+
+  traffic_source:
+    sql: '"TRAFFIC_SOURCE"'
+
+measures:
+  count:
+    aggregate_type: count

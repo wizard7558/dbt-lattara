@@ -1,0 +1,30 @@
+# Reference this view as client_data_allied_team__ctv_ott_summary
+catalog: CLIENT_DATA
+schema: ALLIED_TEAM
+table_name: CTV_OTT_SUMMARY
+
+dimensions:
+  date:
+    sql: '"DATE"'
+
+  media_type:
+    sql: '"MEDIA_TYPE"'
+
+  paid_organic:
+    sql: '"PAID_ORGANIC"'
+
+  currency:
+    sql: '"CURRENCY"'
+
+  reach:
+    sql: '"REACH"'
+
+  creative:
+    sql: '"CREATIVE"'
+
+  traffic_source:
+    sql: '"TRAFFIC_SOURCE"'
+
+measures:
+  count:
+    aggregate_type: count

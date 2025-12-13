@@ -1,0 +1,48 @@
+# Reference this view as client_data_allied_team__youtube_display
+catalog: CLIENT_DATA
+schema: ALLIED_TEAM
+table_name: YOUTUBE_DISPLAY
+
+dimensions:
+  date:
+    sql: '"DATE"'
+
+  media_type:
+    sql: '"MEDIA_TYPE"'
+
+  paid_organic:
+    sql: '"PAID_ORGANIC"'
+
+  currency:
+    sql: '"CURRENCY"'
+
+  clicks:
+    sql: '"CLICKS"'
+
+  completions:
+    sql: '"COMPLETIONS"'
+
+  impressions:
+    sql: '"IMPRESSIONS"'
+
+  creative:
+    sql: '"CREATIVE"'
+
+  vcr:
+    sql: '"VCR"'
+
+  traffic_source:
+    sql: '"TRAFFIC_SOURCE"'
+
+  video_impressions:
+    sql: '"VIDEO_IMPRESSIONS"'
+
+  video_played_100_pct:
+    sql: '"VIDEO_PLAYED_100_PCT"'
+
+  views_100_pct:
+    sql: '"VIEWS_100_PCT"'
+
+measures:
+  count:
+    aggregate_type: count

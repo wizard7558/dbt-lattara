@@ -1,0 +1,65 @@
+# Reference this view as client_data_allied_team__ctv_ott_aggregated
+catalog: CLIENT_DATA
+schema: ALLIED_TEAM
+table_name: CTV_OTT_AGGREGATED
+
+dimensions:
+  date:
+    sql: '"DATE"'
+
+  media_type:
+    sql: '"MEDIA_TYPE"'
+
+  paid_organic:
+    sql: '"PAID_ORGANIC"'
+
+  currency:
+    sql: '"CURRENCY"'
+
+  completions:
+    sql: '"COMPLETIONS"'
+
+  reach:
+    sql: '"REACH"'
+
+  impressions:
+    sql: '"IMPRESSIONS"'
+
+  creative:
+    sql: '"CREATIVE"'
+
+  vcr:
+    sql: '"VCR"'
+
+  traffic_source:
+    sql: '"TRAFFIC_SOURCE"'
+
+  campaign_name:
+    sql: '"CAMPAIGN_NAME"'
+
+  campaign_id:
+    sql: '"CAMPAIGN_ID"'
+    format: ID
+
+  creative_name:
+    sql: '"CREATIVE_NAME"'
+
+  demand_tag_id:
+    sql: '"DEMAND_TAG_ID"'
+    format: ID
+
+  impressions_alt:
+    sql: '"IMPRESSIONS_ALT"'
+
+  ip_reach:
+    sql: '"IP_REACH"'
+
+  unique_ips:
+    sql: '"UNIQUE_IPS"'
+
+  video_impressions:
+    sql: '"VIDEO_IMPRESSIONS"'
+
+measures:
+  count:
+    aggregate_type: count
