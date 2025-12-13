@@ -1,0 +1,8 @@
+base_view: client_data_allied_team__ctv_ott_summary
+# CTV/OTT Summary
+label: CTV/OTT Reach Summary
+group_label: Allied Team
+description: |
+  Daily reach summary for CTV/OTT campaigns by creative and traffic source.
+
+joins: {}

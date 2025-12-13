@@ -1,0 +1,9 @@
+base_view: client_data_allied_team__youtube_display
+# YouTube Display Performance
+label: YouTube Display Performance
+group_label: Allied Team
+description: |
+  YouTube advertising performance including Shorts, Skippable, and Non-Skippable formats.
+  Tracks video completion rates, clicks, and 100% view rates.
+
+joins: {}

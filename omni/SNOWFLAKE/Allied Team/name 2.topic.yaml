@@ -1,0 +1,9 @@
+base_view: client_data_allied_team__ctv_ott_publisher_detail
+# CTV/OTT Publisher Detail
+label: CTV/OTT Publisher Detail
+group_label: Allied Team
+description: |
+  Publisher-level CTV/OTT performance data with 18K+ rows.
+  Includes video completion rates, clicks, and reach by publisher.
+
+joins: {}

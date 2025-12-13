@@ -1,0 +1,9 @@
+base_view: client_data_allied_team__ctv_ott_aggregated
+# CTV/OTT Campaign Aggregated
+label: CTV/OTT Campaign Performance
+group_label: Allied Team
+description: |
+  Campaign-level CTV/OTT aggregated performance metrics.
+  Includes impressions, completions, unique IPs, and VCR.
+
+joins: {}
