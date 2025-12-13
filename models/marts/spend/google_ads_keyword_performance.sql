@@ -13,6 +13,11 @@ keyword_conversions AS (
     SELECT * FROM {{ ref('int_google_keyword_conversions') }}
 ),
 
+optimization_conv AS (
+    SELECT * FROM {{ ref('optimization_conversions') }}
+    WHERE platform = 'google'
+),
+
 -- Join spend and conversions, assign row number to prevent duplication
 joined AS (
     SELECT 
@@ -48,28 +53,32 @@ joined AS (
 )
 
 SELECT 
-    date,
-    account,
-    customer_id,
-    campaign,
-    campaign_id,
-    adgroup,
-    ad_group_id,
-    keyword_id,
-    keyword,
-    match_type,
-    conversion_action_name,
+    j.date,
+    j.account,
+    j.customer_id,
+    j.campaign,
+    j.campaign_id,
+    j.adgroup,
+    j.ad_group_id,
+    j.keyword_id,
+    j.keyword,
+    j.match_type,
+    j.conversion_action_name,
     -- Spend metrics only on first row to prevent duplication
-    CASE WHEN rn = 1 THEN spend ELSE 0 END AS spend,
-    CASE WHEN rn = 1 THEN impressions ELSE 0 END AS impressions,
-    CASE WHEN rn = 1 THEN clicks ELSE 0 END AS clicks,
+    CASE WHEN j.rn = 1 THEN j.spend ELSE 0 END AS spend,
+    CASE WHEN j.rn = 1 THEN j.impressions ELSE 0 END AS impressions,
+    CASE WHEN j.rn = 1 THEN j.clicks ELSE 0 END AS clicks,
     -- Conversion metrics on all rows
-    COALESCE(conversions, 0) AS conversions,
-    COALESCE(conversion_value, 0) AS conversion_value,
+    COALESCE(j.conversions, 0) AS conversions,
+    COALESCE(j.conversion_value, 0) AS conversion_value,
     -- Calculated metrics (use raw values, aggregation handles dedup)
-    div0(CASE WHEN rn = 1 THEN spend ELSE 0 END, CASE WHEN rn = 1 THEN clicks ELSE 0 END) AS cpc,
-    div0(CASE WHEN rn = 1 THEN clicks ELSE 0 END, CASE WHEN rn = 1 THEN impressions ELSE 0 END) * 100 AS ctr,
-    div0(CASE WHEN rn = 1 THEN spend ELSE 0 END, COALESCE(conversions, 0)) AS cpa,
-    div0(COALESCE(conversion_value, 0), CASE WHEN rn = 1 THEN spend ELSE 0 END) AS roas
-FROM joined
+    div0(CASE WHEN j.rn = 1 THEN j.spend ELSE 0 END, CASE WHEN j.rn = 1 THEN j.clicks ELSE 0 END) AS cpc,
+    div0(CASE WHEN j.rn = 1 THEN j.clicks ELSE 0 END, CASE WHEN j.rn = 1 THEN j.impressions ELSE 0 END) * 100 AS ctr,
+    div0(CASE WHEN j.rn = 1 THEN j.spend ELSE 0 END, COALESCE(j.conversions, 0)) AS cpa,
+    div0(COALESCE(j.conversion_value, 0), CASE WHEN j.rn = 1 THEN j.spend ELSE 0 END) AS roas,
+    CASE WHEN oc.optimization_conversion IS NOT NULL THEN TRUE ELSE FALSE END AS is_optimization_conversion
+FROM joined j
+LEFT JOIN optimization_conv oc
+    ON j.account = oc.account
+    AND j.conversion_action_name = oc.optimization_conversion
 ORDER BY 1 DESC, 2, 3, 4, 5, 6, 7
