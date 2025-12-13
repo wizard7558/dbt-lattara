@@ -1,0 +1,27 @@
+# Domain Money Ads Performance Topic
+base_view: dbt_prod__domain_money_ads_performance
+base_view_label: Domain Money Ads
+label: Domain Money Ads Performance
+group_label: Paid Media
+description: |
+  Domain Money combined Meta and Google Ads performance at ad group level.
+  MQL = schedule_total (Meta) or HubSpot MQL (Google)
+
+joins: {}
+
+ai_context: |
+  This topic contains Domain Money advertising data from Meta and Google.
+  
+  PRIMARY CONVERSION METRIC:
+  - mql: Marketing Qualified Leads (schedule_total for Meta, HubSpot MQL for Google)
+  - cost_per_mql: Cost per MQL
+  
+  Use mql for all conversion analysis across both platforms.
+  
+  TRAFFIC METRICS:
+  - total_spend, total_impressions, total_clicks, ctr, cpc, cpm
+  
+  KEY DIMENSION:
+  - platform: 'Meta' or 'Google'
+  
+  Data hierarchy: Platform > Account > Campaign > Ad Group/Ad Set
