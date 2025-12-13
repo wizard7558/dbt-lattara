@@ -1,0 +1,27 @@
+base_view: client_data__allied_team__ctv_ott_publisher_detail
+base_view_label: CTV/OTT Publisher Performance
+# Allied Team CTV & Video Performance
+label: Allied Team Media Performance
+description: |
+  CTV, OTT, and YouTube video advertising performance for Allied Team campaigns.
+  Primary analysis table is publisher-level detail with 18K+ rows.
+  Includes campaign performance, video completion rates, and audience reach.
+
+joins: {}
+
+views:
+  client_data__allied_team__ctv_ott_publisher_detail:
+    label: Publisher Detail
+    display_order: 1
+
+  client_data__allied_team__ctv_ott_aggregated:
+    label: Campaign Aggregated
+    display_order: 2
+
+  client_data__allied_team__ctv_ott_summary:
+    label: CTV/OTT Summary
+    display_order: 3
+
+  client_data__allied_team__youtube_display:
+    label: YouTube Display
+    display_order: 4

@@ -4,27 +4,67 @@ schema: ALLIED_TEAM
 table_name: CTV_OTT_SUMMARY
 
 dimensions:
+  # Compound primary key
+  primary_key:
+    sql: CONCAT(${date}, '-', ${creative}, '-', ${traffic_source})
+    hidden: true
+    primary_key: true
+
   date:
     sql: '"DATE"'
+    label: Date
+    timeframes: [ raw, date, week, month, quarter, year ]
+    convert_tz: false
 
   media_type:
     sql: '"MEDIA_TYPE"'
+    label: Media Type
 
   paid_organic:
     sql: '"PAID_ORGANIC"'
+    label: Paid/Organic
 
   currency:
     sql: '"CURRENCY"'
-
-  reach:
-    sql: '"REACH"'
+    label: Currency
 
   creative:
     sql: '"CREATIVE"'
+    label: Creative
 
   traffic_source:
     sql: '"TRAFFIC_SOURCE"'
+    label: Traffic Source
+
+  # Derived dimensions
+  creative_duration:
+    sql: |
+      CASE
+        WHEN ${creative} LIKE '%:15%' THEN '15 seconds'
+        WHEN ${creative} LIKE '%:30%' THEN '30 seconds'
+        WHEN ${creative} LIKE '%:60%' OR ${creative} LIKE '%1:00%' THEN '60 seconds'
+        ELSE 'Other'
+      END
+    label: Creative Duration
+    description: Video duration derived from creative naming
+
+  # Hidden base columns for aggregation
+  reach:
+    sql: '"REACH"'
+    hidden: true
 
 measures:
   count:
     aggregate_type: count
+
+  total_reach:
+    sql: ${reach}
+    label: Total Reach
+    format: number_0
+    aggregate_type: sum
+
+  avg_daily_reach:
+    sql: ${reach}
+    label: Avg Daily Reach
+    format: number_0
+    aggregate_type: average

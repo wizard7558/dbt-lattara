@@ -4,45 +4,129 @@ schema: ALLIED_TEAM
 table_name: YOUTUBE_DISPLAY
 
 dimensions:
+  # Compound primary key
+  primary_key:
+    sql: CONCAT(${date}, '-', ${traffic_source}, '-', ${creative})
+    hidden: true
+    primary_key: true
+
   date:
     sql: '"DATE"'
+    label: Date
+    timeframes: [ raw, date, week, month, quarter, year ]
+    convert_tz: false
 
   media_type:
     sql: '"MEDIA_TYPE"'
+    label: Media Type
 
   paid_organic:
     sql: '"PAID_ORGANIC"'
+    label: Paid/Organic
 
   currency:
     sql: '"CURRENCY"'
-
-  clicks:
-    sql: '"CLICKS"'
-
-  completions:
-    sql: '"COMPLETIONS"'
-
-  impressions:
-    sql: '"IMPRESSIONS"'
+    label: Currency
 
   creative:
     sql: '"CREATIVE"'
-
-  vcr:
-    sql: '"VCR"'
+    label: Creative
 
   traffic_source:
     sql: '"TRAFFIC_SOURCE"'
+    label: Traffic Source
+
+  # Derived dimensions
+  creative_duration:
+    sql: |
+      CASE
+        WHEN ${creative} LIKE '%:15%' THEN '15 seconds'
+        WHEN ${creative} LIKE '%:30%' THEN '30 seconds'
+        WHEN ${creative} LIKE '%:60%' OR ${creative} LIKE '%1:00%' THEN '60 seconds'
+        ELSE 'Other'
+      END
+    label: Creative Duration
+    description: Video duration derived from creative naming
+
+  youtube_ad_format:
+    sql: |
+      CASE
+        WHEN UPPER(${traffic_source}) LIKE '%SHORTS%' THEN 'Shorts'
+        WHEN UPPER(${traffic_source}) LIKE '%NON-SKIPPABLE%' OR UPPER(${traffic_source}) LIKE '%NONSKIPPABLE%' THEN 'Non-Skippable'
+        WHEN UPPER(${traffic_source}) LIKE '%SKIPPABLE%' THEN 'Skippable'
+        ELSE 'Other'
+      END
+    label: YouTube Ad Format
+    description: Ad format type derived from traffic source
+
+  # Hidden base columns for aggregation
+  clicks:
+    sql: '"CLICKS"'
+    hidden: true
+
+  impressions:
+    sql: '"IMPRESSIONS"'
+    hidden: true
+
+  completions:
+    sql: '"COMPLETIONS"'
+    hidden: true
 
   video_impressions:
     sql: '"VIDEO_IMPRESSIONS"'
-
-  video_played_100_pct:
-    sql: '"VIDEO_PLAYED_100_PCT"'
+    hidden: true
 
   views_100_pct:
     sql: '"VIEWS_100_PCT"'
+    hidden: true
 
 measures:
   count:
     aggregate_type: count
+
+  total_clicks:
+    sql: ${clicks}
+    label: Total Clicks
+    format: number_0
+    aggregate_type: sum
+
+  total_impressions:
+    sql: ${impressions}
+    label: Total Impressions
+    format: number_0
+    aggregate_type: sum
+
+  total_completions:
+    sql: ${completions}
+    label: Total Completions
+    format: number_0
+    aggregate_type: sum
+
+  total_video_impressions:
+    sql: ${video_impressions}
+    label: Total Video Impressions
+    format: number_0
+    aggregate_type: sum
+
+  total_100pct_views:
+    sql: ${views_100_pct}
+    label: Total 100% Views
+    format: number_0
+    aggregate_type: sum
+
+  vcr:
+    sql: ${total_completions} / NULLIF(${total_impressions}, 0)
+    label: VCR (Video Completion Rate)
+    format: percent_2
+    description: Video Completion Rate calculated as completions / impressions
+
+  ctr:
+    sql: ${total_clicks} / NULLIF(${total_impressions}, 0) * 100
+    label: CTR
+    format: percent_2
+
+  completion_rate_100pct:
+    sql: ${total_100pct_views} / NULLIF(${total_video_impressions}, 0)
+    label: 100% View Rate
+    format: percent_2
+    description: Rate of videos watched to 100% completion
