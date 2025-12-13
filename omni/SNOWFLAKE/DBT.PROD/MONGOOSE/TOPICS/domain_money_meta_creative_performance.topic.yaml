@@ -11,16 +11,16 @@ joins: {}
 
 ai_context: |
   This topic contains Domain Money Meta advertising data at creative level.
-
+  
   PRIMARY CONVERSION METRIC:
   - mql: Marketing Qualified Leads (schedule_total)
   - cost_per_mql: Cost per MQL
-
+  
   Use mql for all conversion analysis.
-
+  
   TRAFFIC METRICS:
   - total_spend, total_impressions, total_clicks, ctr, cpc, cpm
-
+  
   Data hierarchy: Account > Campaign > Ad Set > Ad (Creative)
-
+  
   Use this topic to analyze creative performance and identify top performing ads.
