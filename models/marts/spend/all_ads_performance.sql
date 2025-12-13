@@ -25,7 +25,7 @@ SELECT
     'Google' AS platform,
     account,
     campaign,
-    NULL AS ad_group,
+    adgroup,
     conversion_action_name AS conversion_name,
     is_optimization_conversion,
     SUM(spend) AS spend,
@@ -33,7 +33,7 @@ SELECT
     SUM(clicks) AS clicks,
     SUM(conversions) AS conversions,
     SUM(conversion_value) AS conversion_value
-FROM {{ ref('google_ads_campaign_performance') }}
+FROM {{ ref('google_ads_adgroup_performance') }}
 GROUP BY 1, 2, 3, 4, 5, 6, 7
 
 ORDER BY 1 DESC
