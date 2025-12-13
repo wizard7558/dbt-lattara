@@ -6,28 +6,189 @@ table_name: ALL_SPEND_BY_ACCOUNT
 dimensions:
   date:
     sql: '"DATE"'
+    label: Date
+    timeframes: [ raw, date, week, month, quarter, year ]
+    convert_tz: false
 
   platform:
     sql: '"PLATFORM"'
+    label: Platform
+    description: Advertising platform (Meta, Google, LinkedIn)
 
   account:
     sql: '"ACCOUNT"'
+    label: Account
 
   campaign:
     sql: '"CAMPAIGN"'
+    label: Campaign
 
+  # Hidden base columns for aggregation
   spend:
     sql: '"SPEND"'
+    hidden: true
 
   impressions:
     sql: '"IMPRESSIONS"'
+    hidden: true
 
   clicks:
     sql: '"CLICKS"'
+    hidden: true
+
+  # Hidden period spend columns for calculations
+  wtd_spend_value:
+    sql: CASE WHEN "DATE" >= DATE_TRUNC('week', CURRENT_DATE()) THEN "SPEND" ELSE 0 END
+    hidden: true
+
+  last_week_spend_value:
+    sql: CASE WHEN "DATE" >= DATE_TRUNC('week', CURRENT_DATE()) - INTERVAL '7 days' AND "DATE" < DATE_TRUNC('week', CURRENT_DATE()) THEN "SPEND" ELSE 0 END
+    hidden: true
+
+  mtd_spend_value:
+    sql: CASE WHEN "DATE" >= DATE_TRUNC('month', CURRENT_DATE()) THEN "SPEND" ELSE 0 END
+    hidden: true
+
+  last_month_spend_value:
+    sql: CASE WHEN "DATE" >= DATE_TRUNC('month', CURRENT_DATE()) - INTERVAL '1 month' AND "DATE" < DATE_TRUNC('month', CURRENT_DATE()) THEN "SPEND" ELSE 0 END
+    hidden: true
+
+  qtd_spend_value:
+    sql: CASE WHEN "DATE" >= DATE_TRUNC('quarter', CURRENT_DATE()) THEN "SPEND" ELSE 0 END
+    hidden: true
+
+  last_quarter_spend_value:
+    sql: CASE WHEN "DATE" >= DATE_TRUNC('quarter', CURRENT_DATE()) - INTERVAL '3 months' AND "DATE" < DATE_TRUNC('quarter', CURRENT_DATE()) THEN "SPEND" ELSE 0 END
+    hidden: true
 
 measures:
   count:
     aggregate_type: count
+
+  # Base metrics
+  total_spend:
+    sql: ${spend}
+    label: Total Spend
+    format: usdcurrency_2
+    aggregate_type: sum
+
+  total_impressions:
+    sql: ${impressions}
+    label: Total Impressions
+    format: number_0
+    aggregate_type: sum
+
+  total_clicks:
+    sql: ${clicks}
+    label: Total Clicks
+    format: number_0
+    aggregate_type: sum
+
+  ctr:
+    sql: ${total_clicks} / NULLIF(${total_impressions}, 0) * 100
+    label: CTR
+    format: percent_2
+
+  cpc:
+    sql: ${total_spend} / NULLIF(${total_clicks}, 0)
+    label: CPC
+    format: usdcurrency_2
+
+  cpm:
+    sql: ${total_spend} / NULLIF(${total_impressions}, 0) * 1000
+    label: CPM
+    format: usdcurrency_2
+
+  # Week metrics
+  wtd_spend:
+    sql: ${wtd_spend_value}
+    label: WTD Spend
+    description: Week to date spend (current week)
+    format: usdcurrency_2
+    aggregate_type: sum
+
+  last_week_spend:
+    sql: ${last_week_spend_value}
+    label: Last Week Spend
+    format: usdcurrency_2
+    aggregate_type: sum
+
+  week_projection:
+    sql: ${wtd_spend} / NULLIF(DATEDIFF('day', DATE_TRUNC('week', CURRENT_DATE()), CURRENT_DATE()) + 1, 0) * 7
+    label: Week Projection
+    description: Projected spend for full week based on WTD pace
+    format: usdcurrency_2
+
+  wow_change:
+    sql: (${wtd_spend} - ${last_week_spend}) / NULLIF(${last_week_spend}, 0) * 100
+    label: WoW Change %
+    description: Week over week spend change
+    format: percent_2
+
+  # Month metrics
+  mtd_spend:
+    sql: ${mtd_spend_value}
+    label: MTD Spend
+    description: Month to date spend (current month)
+    format: usdcurrency_2
+    aggregate_type: sum
+
+  last_month_spend:
+    sql: ${last_month_spend_value}
+    label: Last Month Spend
+    format: usdcurrency_2
+    aggregate_type: sum
+
+  month_projection:
+    sql: ${mtd_spend} / NULLIF(DATEDIFF('day', DATE_TRUNC('month', CURRENT_DATE()), CURRENT_DATE()) + 1, 0) * DATEDIFF('day', DATE_TRUNC('month', CURRENT_DATE()), LAST_DAY(CURRENT_DATE())) + 1
+    label: Month Projection
+    description: Projected spend for full month based on MTD pace
+    format: usdcurrency_2
+
+  mom_change:
+    sql: (${mtd_spend} - ${last_month_spend}) / NULLIF(${last_month_spend}, 0) * 100
+    label: MoM Change %
+    description: Month over month spend change
+    format: percent_2
+
+  # Quarter metrics
+  qtd_spend:
+    sql: ${qtd_spend_value}
+    label: QTD Spend
+    description: Quarter to date spend (current quarter)
+    format: usdcurrency_2
+    aggregate_type: sum
+
+  last_quarter_spend:
+    sql: ${last_quarter_spend_value}
+    label: Last Quarter Spend
+    format: usdcurrency_2
+    aggregate_type: sum
+
+  quarter_projection:
+    sql: ${qtd_spend} / NULLIF(DATEDIFF('day', DATE_TRUNC('quarter', CURRENT_DATE()), CURRENT_DATE()) + 1, 0) * DATEDIFF('day', DATE_TRUNC('quarter', CURRENT_DATE()), LAST_DAY(DATEADD('month', 2, DATE_TRUNC('quarter', CURRENT_DATE())))) + 1
+    label: Quarter Projection
+    description: Projected spend for full quarter based on QTD pace
+    format: usdcurrency_2
+
+  qoq_change:
+    sql: (${qtd_spend} - ${last_quarter_spend}) / NULLIF(${last_quarter_spend}, 0) * 100
+    label: QoQ Change %
+    description: Quarter over quarter spend change
+    format: percent_2
+
+  # Count metrics
+  campaign_count:
+    sql: ${campaign}
+    label: Campaign Count
+    format: number_0
+    aggregate_type: count_distinct
+
+  account_count:
+    sql: ${account}
+    label: Account Count
+    format: number_0
+    aggregate_type: count_distinct
 
 #The info below was pulled from your dbt repository and is read-only.
 dbt:
