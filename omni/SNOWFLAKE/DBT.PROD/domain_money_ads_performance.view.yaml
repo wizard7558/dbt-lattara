@@ -1,0 +1,136 @@
+# Reference this view as dbt_prod__domain_money_ads_performance
+catalog: DBT
+schema: PROD
+table_name: DOMAIN_MONEY_ADS_PERFORMANCE
+
+dimensions:
+  date:
+    sql: '"DATE"'
+    label: Date
+    timeframes: [ raw, date, week, month, quarter, year ]
+    convert_tz: false
+
+  platform:
+    sql: '"PLATFORM"'
+    label: Platform
+    description: Meta or Google
+
+  account:
+    sql: '"ACCOUNT"'
+    label: Account
+
+  campaign:
+    sql: '"CAMPAIGN"'
+    label: Campaign
+
+  adgroup:
+    sql: '"ADGROUP"'
+    label: Ad Group / Ad Set
+
+  # Hidden base columns
+  spend:
+    sql: '"SPEND"'
+    hidden: true
+
+  impressions:
+    sql: '"IMPRESSIONS"'
+    hidden: true
+
+  clicks:
+    sql: '"CLICKS"'
+    hidden: true
+
+  mql_value:
+    sql: '"MQL"'
+    hidden: true
+
+  mql:
+    sql: '"MQL"'
+
+measures:
+  count:
+    aggregate_type: count
+
+  total_spend:
+    sql: ${spend}
+    label: Total Spend
+    format: usdcurrency_2
+    aggregate_type: sum
+
+  total_impressions:
+    sql: ${impressions}
+    label: Total Impressions
+    format: number_0
+    aggregate_type: sum
+
+  total_clicks:
+    sql: ${clicks}
+    label: Total Clicks
+    format: number_0
+    aggregate_type: sum
+
+  mql:
+    sql: ${mql_value}
+    label: MQL
+    format: number_2
+    description: Marketing Qualified Leads (schedule_total for Meta, HubSpot MQL for Google)
+    aggregate_type: sum
+
+  ctr:
+    sql: ${total_clicks} / NULLIF(${total_impressions}, 0) * 100
+    label: CTR
+    format: percent_2
+
+  cpc:
+    sql: ${total_spend} / NULLIF(${total_clicks}, 0)
+    label: CPC
+    format: usdcurrency_2
+
+  cpm:
+    sql: ${total_spend} / NULLIF(${total_impressions}, 0) * 1000
+    label: CPM
+    format: usdcurrency_2
+
+  cost_per_mql:
+    sql: ${total_spend} / NULLIF(${mql}, 0)
+    label: Cost per MQL
+    format: usdcurrency_2
+
+  conversion_rate:
+    sql: ${mql} / NULLIF(${total_clicks}, 0) * 100
+    label: Conversion Rate
+    format: percent_2
+
+#The info below was pulled from your dbt repository and is read-only.
+dbt:
+  name: domain_money_ads_performance
+  target_schema: PROD
+  config:
+    materialized: table
+  code: |-
+    {{ config(materialized='table') }}
+
+    -- Domain Money combined model at ad group level with optimization conversions pivoted
+    -- Meta: schedule_total | Google: HubSpot - Marketing Qualified Lead
+
+    SELECT
+        date,
+        Platform,
+        Account,
+        Campaign,
+        ad_group AS AdGroup,
+        SUM(spend) AS Spend,
+        SUM(impressions) AS Impressions,
+        SUM(clicks) AS Clicks,
+        SUM(CASE 
+                WHEN conversion_name = 'schedule_total' THEN conversions 
+                WHEN conversion_name = 'HubSpot - Marketing Qualified Lead' THEN conversions
+                ELSE 0 
+            END) AS MQL
+    FROM {{ ref('all_ads_performance') }}
+    WHERE account like '%Domain%'
+    GROUP BY date,
+        Platform,
+        Account,
+        Campaign,
+        ad_group

@@ -77,4 +77,4 @@ dbt:
          , ADSET ASC
          , AD ASC
          , CONVERSIONNAME ASC
-  referenced_by: [ all_ads_performance, all_spend_by_account ]
+  referenced_by: [ all_ads_performance, all_spend_by_account, domain_money_meta_creatives ]

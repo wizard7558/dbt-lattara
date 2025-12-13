@@ -1,0 +1,68 @@
+# Reference this view as omni_dbt__domain_money_meta_creatives
+schema_label: ""
+
+schema: omni_dbt
+table_name: DOMAIN_MONEY_META_CREATIVES
+
+dimensions:
+  date:
+    sql: '"DATE"'
+
+  account:
+    sql: '"ACCOUNT"'
+
+  campaign:
+    sql: '"CAMPAIGN"'
+
+  adset:
+    sql: '"ADSET"'
+
+  ad:
+    sql: '"AD"'
+
+  ad_id:
+    sql: '"AD_ID"'
+    format: ID
+
+  spend:
+    sql: '"SPEND"'
+
+  impressions:
+    sql: '"IMPRESSIONS"'
+
+  clicks:
+    sql: '"CLICKS"'
+
+  mql:
+    sql: '"MQL"'
+
+measures:
+  count:
+    aggregate_type: count
+
+#The info below was pulled from your dbt repository and is read-only.
+dbt:
+  name: domain_money_meta_creatives
+  target_schema: PROD
+  config:
+    materialized: table
+  code: |-
+    {{ config(materialized='table') }}
+
+    -- Domain Money Meta creative-level model with schedule_total as separate column
+    SELECT
+        date,
+        account,
+        campaign,
+        adset,
+        ad,
+        ad_id,
+        SUM(spend) AS spend,
+        SUM(impressions) AS impressions,
+        SUM(clicks) AS clicks,
+        SUM(CASE WHEN conversionname = 'schedule_total' THEN allconv ELSE 0 END) AS MQL,
+    FROM {{ ref('facebook_ads_performance') }}
+    WHERE account = 'Domain Money Ad Account'
+    GROUP BY 1, 2, 3, 4, 5, 6
+
+    ORDER BY 1 DESC

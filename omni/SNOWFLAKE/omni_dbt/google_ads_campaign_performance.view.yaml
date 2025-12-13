@@ -135,4 +135,4 @@ dbt:
         ON j.account = oc.account
         AND j.conversion_action_name = oc.optimization_conversion
     ORDER BY 1 DESC, 2, 3, 4
-  referenced_by: [ all_ads_performance, all_spend_by_account ]
+  referenced_by: [ all_spend_by_account ]

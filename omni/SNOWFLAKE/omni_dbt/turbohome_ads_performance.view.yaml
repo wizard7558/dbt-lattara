@@ -1,0 +1,67 @@
+# Reference this view as omni_dbt__turbohome_ads_performance
+schema_label: ""
+
+schema: omni_dbt
+table_name: TURBOHOME_ADS_PERFORMANCE
+
+dimensions:
+  date:
+    sql: '"DATE"'
+
+  platform:
+    sql: '"PLATFORM"'
+
+  account:
+    sql: '"ACCOUNT"'
+
+  campaign:
+    sql: '"CAMPAIGN"'
+
+  ad_group:
+    sql: '"AD_GROUP"'
+
+  spend:
+    sql: '"SPEND"'
+
+  impressions:
+    sql: '"IMPRESSIONS"'
+
+  clicks:
+    sql: '"CLICKS"'
+
+  lead_score_2:
+    sql: '"LEAD_SCORE_2"'
+
+  lead_score_3:
+    sql: '"LEAD_SCORE_3"'
+
+measures:
+  count:
+    aggregate_type: count
+
+#The info below was pulled from your dbt repository and is read-only.
+dbt:
+  name: turbohome_ads_performance
+  target_schema: PROD
+  config:
+    materialized: table
+  code: |-
+    {{ config(materialized='table') }}
+
+    -- TurboHome specific model with Lead Score conversions as separate columns
+    SELECT
+        date,
+        'Google' AS platform,
+        account,
+        campaign,
+        ad_group,
+        SUM(spend) AS spend,
+        SUM(impressions) AS impressions,
+        SUM(clicks) AS clicks,
+        SUM(CASE WHEN conversion_name = 'Lead Score | 2' THEN conversions ELSE 0 END) AS lead_score_2,
+        SUM(CASE WHEN conversion_name = 'Lead Score | 3' THEN conversions ELSE 0 END) AS lead_score_3
+    FROM {{ ref('all_ads_performance') }}
+    WHERE account = 'TurboHome'
+    GROUP BY 1, 2, 3, 4, 5
+
+    ORDER BY 1 DESC
