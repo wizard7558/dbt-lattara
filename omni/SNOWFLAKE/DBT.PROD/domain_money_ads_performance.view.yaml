@@ -1,7 +1,7 @@
-# Reference this view as dbt_prod__domain_money_meta_creatives
+# Reference this view as dbt_prod__domain_money_ads_performance
 catalog: DBT
 schema: PROD
-table_name: DOMAIN_MONEY_META_CREATIVES
+table_name: DOMAIN_MONEY_ADS_PERFORMANCE
 
 dimensions:
   date:
@@ -9,6 +9,11 @@ dimensions:
     label: Date
     timeframes: [ raw, date, week, month, quarter, year ]
     convert_tz: false
+
+  platform:
+    sql: '"PLATFORM"'
+    label: Platform
+    description: Meta or Google
 
   account:
     sql: '"ACCOUNT"'
@@ -18,18 +23,9 @@ dimensions:
     sql: '"CAMPAIGN"'
     label: Campaign
 
-  adset:
-    sql: '"ADSET"'
-    label: Ad Set
-
-  ad:
-    sql: '"AD"'
-    label: Ad / Creative
-
-  ad_id:
-    sql: '"AD_ID"'
-    label: Ad ID
-    format: ID
+  adgroup:
+    sql: '"ADGROUP"'
+    label: Ad Group / Ad Set
 
   # Hidden base columns
   spend:
@@ -73,8 +69,8 @@ measures:
   mql:
     sql: ${mql_value}
     label: MQL
-    description: Marketing Qualified Leads (schedule_total)
     format: number_2
+    description: Marketing Qualified Leads (schedule_total for Meta, HubSpot MQL for Google)
     aggregate_type: sum
 
   ctr:
@@ -102,8 +98,36 @@ measures:
     label: Conversion Rate
     format: percent_2
 
-  ad_count:
-    sql: ${ad_id}
-    label: Ad Count
-    format: number_0
-    aggregate_type: count_distinct
+#The info below was pulled from your dbt repository and is read-only.
+dbt:
+  name: domain_money_ads_performance
+  target_schema: PROD
+  config:
+    materialized: table
+  code: |-
+    {{ config(materialized='table') }}
+
+    -- Domain Money combined model at ad group level with optimization conversions pivoted
+    -- Meta: schedule_total | Google: HubSpot - Marketing Qualified Lead
+
+    SELECT
+        date,
+        Platform,
+        Account,
+        Campaign,
+        ad_group AS AdGroup,
+        SUM(spend) AS Spend,
+        SUM(impressions) AS Impressions,
+        SUM(clicks) AS Clicks,
+        SUM(CASE 
+                WHEN conversion_name = 'schedule_total' THEN conversions 
+                WHEN conversion_name = 'HubSpot - Marketing Qualified Lead' THEN conversions
+                ELSE 0 
+            END) AS MQL
+    FROM {{ ref('all_ads_performance') }}
+    WHERE account like '%Domain%'
+    GROUP BY date,
+        Platform,
+        Account,
+        Campaign,
+        ad_group

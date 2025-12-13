@@ -72,22 +72,22 @@ measures:
   lead_score_2:
     sql: ${lead_score_2_value}
     label: Lead Score 2
-    description: Lead Score | 2 conversions
     format: number_2
+    description: Lead Score | 2 conversions
     aggregate_type: sum
 
   lead_score_3:
     sql: ${lead_score_3_value}
     label: Lead Score 3
-    description: Lead Score | 3 conversions
     format: number_2
+    description: Lead Score | 3 conversions
     aggregate_type: sum
 
   total_leads:
     sql: ${lead_score_2_value} + ${lead_score_3_value}
     label: Total Leads
-    description: Lead Score 2 + Lead Score 3 combined
     format: number_2
+    description: Lead Score 2 + Lead Score 3 combined
     aggregate_type: sum
 
   ctr:
@@ -118,10 +118,37 @@ measures:
   cost_per_lead:
     sql: ${total_spend} / NULLIF(${total_leads}, 0)
     label: Cost per Lead
-    description: Cost per Lead Score 2 or 3
     format: usdcurrency_2
+    description: Cost per Lead Score 2 or 3
 
   conversion_rate:
     sql: ${total_leads} / NULLIF(${total_clicks}, 0) * 100
     label: Conversion Rate
     format: percent_2
+
+#The info below was pulled from your dbt repository and is read-only.
+dbt:
+  name: turbohome_ads_performance
+  target_schema: PROD
+  config:
+    materialized: table
+  code: |-
+    {{ config(materialized='table') }}
+
+    -- TurboHome specific model with Lead Score conversions as separate columns
+    SELECT
+        date,
+        'Google' AS platform,
+        account,
+        campaign,
+        ad_group,
+        SUM(spend) AS spend,
+        SUM(impressions) AS impressions,
+        SUM(clicks) AS clicks,
+        SUM(CASE WHEN conversion_name = 'Lead Score | 2' THEN conversions ELSE 0 END) AS lead_score_2,
+        SUM(CASE WHEN conversion_name = 'Lead Score | 3' THEN conversions ELSE 0 END) AS lead_score_3
+    FROM {{ ref('all_ads_performance') }}
+    WHERE account = 'TurboHome'
+    GROUP BY 1, 2, 3, 4, 5
+
+    ORDER BY 1 DESC
