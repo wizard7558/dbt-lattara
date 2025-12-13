@@ -6,13 +6,13 @@ SELECT
     'Google' AS platform,
     account,
     campaign,
-    adgroup,
+    ad_group,
     SUM(spend) AS spend,
     SUM(impressions) AS impressions,
     SUM(clicks) AS clicks,
-    SUM(CASE WHEN conversion_action_name = 'Lead Score | 2' THEN conversions ELSE 0 END) AS lead_score_2,
-    SUM(CASE WHEN conversion_action_name = 'Lead Score | 3' THEN conversions ELSE 0 END) AS lead_score_3
-FROM {{ ref('google_ads_adgroup_performance') }}
+    SUM(CASE WHEN conversion_name = 'Lead Score | 2' THEN conversions ELSE 0 END) AS lead_score_2,
+    SUM(CASE WHEN conversion_name = 'Lead Score | 3' THEN conversions ELSE 0 END) AS lead_score_3
+FROM {{ ref('all_ads_performance') }}
 WHERE account = 'TurboHome'
 GROUP BY 1, 2, 3, 4, 5
 
