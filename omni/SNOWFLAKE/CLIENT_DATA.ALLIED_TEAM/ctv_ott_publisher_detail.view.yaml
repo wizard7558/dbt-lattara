@@ -4,61 +4,175 @@ schema: ALLIED_TEAM
 table_name: CTV_OTT_PUBLISHER_DETAIL
 
 dimensions:
+  # Compound primary key
+  primary_key:
+    sql: CONCAT(${date}, '-', ${line_id}, '-', ${publisher}, '-', ${creative_name})
+    hidden: true
+    primary_key: true
+
   date:
     sql: '"DATE"'
+    label: Date
+    timeframes: [ raw, date, week, month, quarter, year ]
+    convert_tz: false
 
   media_type:
     sql: '"MEDIA_TYPE"'
+    label: Media Type
 
   paid_organic:
     sql: '"PAID_ORGANIC"'
+    label: Paid/Organic
 
   currency:
     sql: '"CURRENCY"'
-
-  clicks:
-    sql: '"CLICKS"'
+    label: Currency
 
   campaign_name:
     sql: '"CAMPAIGN_NAME"'
+    label: Campaign Name
 
   creative_name:
     sql: '"CREATIVE_NAME"'
+    label: Creative Name
 
   line_name:
     sql: '"LINE_NAME"'
+    label: Line Name
 
   line_id:
     sql: '"LINE_ID"'
+    label: Line ID
     format: ID
-
-  video_complete:
-    sql: '"VIDEO_COMPLETE"'
 
   publisher:
     sql: '"PUBLISHER"'
-
-  completions:
-    sql: '"COMPLETIONS"'
-
-  reach_jl:
-    sql: '"REACH_JL"'
-
-  reach:
-    sql: '"REACH"'
-
-  impressions:
-    sql: '"IMPRESSIONS"'
+    label: Publisher
 
   creative:
     sql: '"CREATIVE"'
-
-  vcr:
-    sql: '"VCR"'
+    label: Creative
 
   traffic_source:
     sql: '"TRAFFIC_SOURCE"'
+    label: Traffic Source
+
+  # Derived dimensions from campaign naming
+  campaign_type:
+    sql: |
+      CASE
+        WHEN UPPER(${campaign_name}) LIKE '%POLITICAL%' THEN 'Political'
+        WHEN UPPER(${campaign_name}) LIKE '%VOTER%' THEN 'Voter Outreach'
+        WHEN UPPER(${campaign_name}) LIKE '%GEOFENCE%' THEN 'Geofence'
+        ELSE 'Standard'
+      END
+    label: Campaign Type
+    description: Campaign type derived from campaign naming convention
+
+  target_audience:
+    sql: |
+      CASE
+        WHEN UPPER(${campaign_name}) LIKE '%COLLEGE%' OR UPPER(${line_name}) LIKE '%COLLEGE%' THEN 'College Students'
+        WHEN UPPER(${campaign_name}) LIKE '%MAYORAL%' THEN 'Mayoral Campaign'
+        WHEN UPPER(${campaign_name}) LIKE '%NYC%' THEN 'NYC Residents'
+        ELSE 'General'
+      END
+    label: Target Audience
+    description: Target audience derived from campaign/line naming
+
+  creative_duration:
+    sql: |
+      CASE
+        WHEN ${creative} LIKE '%:15%' THEN '15 seconds'
+        WHEN ${creative} LIKE '%:30%' THEN '30 seconds'
+        WHEN ${creative} LIKE '%:60%' OR ${creative} LIKE '%1:00%' THEN '60 seconds'
+        ELSE 'Other'
+      END
+    label: Creative Duration
+    description: Video duration derived from creative naming
+
+  # Hidden base columns for aggregation
+  clicks:
+    sql: '"CLICKS"'
+    hidden: true
+
+  impressions:
+    sql: '"IMPRESSIONS"'
+    hidden: true
+
+  completions:
+    sql: '"COMPLETIONS"'
+    hidden: true
+
+  video_complete:
+    sql: '"VIDEO_COMPLETE"'
+    hidden: true
+
+  reach:
+    sql: '"REACH"'
+    hidden: true
+
+  reach_jl:
+    sql: '"REACH_JL"'
+    hidden: true
 
 measures:
   count:
     aggregate_type: count
+
+  total_clicks:
+    sql: ${clicks}
+    label: Total Clicks
+    format: number_0
+    aggregate_type: sum
+
+  total_impressions:
+    sql: ${impressions}
+    label: Total Impressions
+    format: number_0
+    aggregate_type: sum
+
+  total_completions:
+    sql: ${completions}
+    label: Total Completions
+    format: number_0
+    aggregate_type: sum
+
+  total_video_complete:
+    sql: ${video_complete}
+    label: Total Video Completes
+    format: number_0
+    aggregate_type: sum
+
+  total_reach:
+    sql: ${reach}
+    label: Total Reach
+    format: number_0
+    aggregate_type: sum
+
+  total_reach_jl:
+    sql: ${reach_jl}
+    label: Total Reach (JL)
+    format: number_0
+    aggregate_type: sum
+
+  vcr:
+    sql: ${total_completions} / NULLIF(${total_impressions}, 0)
+    label: VCR (Video Completion Rate)
+    format: percent_2
+    description: Video Completion Rate calculated as completions / impressions
+
+  ctr:
+    sql: ${total_clicks} / NULLIF(${total_impressions}, 0) * 100
+    label: CTR
+    format: percent_2
+
+  unique_publishers:
+    sql: ${publisher}
+    label: Unique Publishers
+    aggregate_type: count_distinct
+
+  unique_campaigns:
+    sql: ${campaign_name}
+    label: Unique Campaigns
+    aggregate_type: count_distinct

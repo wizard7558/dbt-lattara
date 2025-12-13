@@ -4,62 +4,146 @@ schema: ALLIED_TEAM
 table_name: CTV_OTT_AGGREGATED
 
 dimensions:
+  # Compound primary key
+  primary_key:
+    sql: CONCAT(${date}, '-', ${campaign_id}, '-', ${demand_tag_id}, '-',
+      ${creative})
+    hidden: true
+    primary_key: true
+
   date:
     sql: '"DATE"'
+    label: Date
+    timeframes: [ raw, date, week, month, quarter, year ]
+    convert_tz: false
 
   media_type:
     sql: '"MEDIA_TYPE"'
+    label: Media Type
 
   paid_organic:
     sql: '"PAID_ORGANIC"'
+    label: Paid/Organic
 
   currency:
     sql: '"CURRENCY"'
-
-  completions:
-    sql: '"COMPLETIONS"'
-
-  reach:
-    sql: '"REACH"'
-
-  impressions:
-    sql: '"IMPRESSIONS"'
-
-  creative:
-    sql: '"CREATIVE"'
-
-  vcr:
-    sql: '"VCR"'
-
-  traffic_source:
-    sql: '"TRAFFIC_SOURCE"'
+    label: Currency
 
   campaign_name:
     sql: '"CAMPAIGN_NAME"'
+    label: Campaign Name
 
   campaign_id:
     sql: '"CAMPAIGN_ID"'
+    label: Campaign ID
     format: ID
 
   creative_name:
     sql: '"CREATIVE_NAME"'
+    label: Creative Name
+
+  creative:
+    sql: '"CREATIVE"'
+    label: Creative
 
   demand_tag_id:
     sql: '"DEMAND_TAG_ID"'
+    label: Demand Tag ID
     format: ID
+
+  traffic_source:
+    sql: '"TRAFFIC_SOURCE"'
+    label: Traffic Source
+
+  # Derived dimensions
+  creative_duration:
+    sql: |
+      CASE
+        WHEN ${creative} LIKE '%:15%' THEN '15 seconds'
+        WHEN ${creative} LIKE '%:30%' THEN '30 seconds'
+        WHEN ${creative} LIKE '%:60%' OR ${creative} LIKE '%1:00%' THEN '60 seconds'
+        ELSE 'Other'
+      END
+    label: Creative Duration
+    description: Video duration derived from creative naming
+
+  # Hidden base columns for aggregation
+  impressions:
+    sql: '"IMPRESSIONS"'
+    hidden: true
 
   impressions_alt:
     sql: '"IMPRESSIONS_ALT"'
+    hidden: true
 
-  ip_reach:
-    sql: '"IP_REACH"'
+  completions:
+    sql: '"COMPLETIONS"'
+    hidden: true
+
+  reach:
+    sql: '"REACH"'
+    hidden: true
 
   unique_ips:
     sql: '"UNIQUE_IPS"'
+    hidden: true
 
   video_impressions:
     sql: '"VIDEO_IMPRESSIONS"'
+    hidden: true
 
 measures:
   count:
     aggregate_type: count
+
+  total_impressions:
+    sql: ${impressions}
+    label: Total Impressions
+    format: number_0
+    aggregate_type: sum
+
+  total_impressions_alt:
+    sql: ${impressions_alt}
+    label: Total Impressions (Alt)
+    format: number_0
+    aggregate_type: sum
+
+  total_completions:
+    sql: ${completions}
+    label: Total Completions
+    format: number_0
+    aggregate_type: sum
+
+  total_reach:
+    sql: ${reach}
+    label: Total Reach
+    format: number_0
+    aggregate_type: sum
+
+  total_unique_ips:
+    sql: ${unique_ips}
+    label: Total Unique IPs
+    format: number_0
+    aggregate_type: sum
+
+  total_video_impressions:
+    sql: ${video_impressions}
+    label: Total Video Impressions
+    format: number_0
+    aggregate_type: sum
+
+  vcr:
+    sql: ${total_completions} / NULLIF(${total_impressions}, 0)
+    label: VCR (Video Completion Rate)
+    format: percent_2
+    description: Video Completion Rate calculated as completions / impressions
+
+  avg_ip_reach:
+    sql: ${total_unique_ips} / NULLIF(${count}, 0)
+    label: Avg Unique IPs per Record
+    format: number_2
+
+  unique_campaigns:
+    sql: ${campaign_id}
+    label: Unique Campaigns
+    aggregate_type: count_distinct
