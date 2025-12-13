@@ -17,24 +17,28 @@ joins: {}
 
 ai_context: |
   This topic contains Google Ads campaign performance data.
-  Key metrics available:
+
+  PRIMARY CONVERSION METRICS (use these by default):
+  - optimization_conversions: The primary conversion event each account optimizes toward
+  - cost_per_optimization_conversion: Cost per primary conversion (spend / optimization_conversions)
+
+  Use optimization_conversions and cost_per_optimization_conversion for all conversion 
+  analysis unless the user specifically asks for "all conversions" or "total conversions".
+
+  TRAFFIC METRICS:
   - total_spend: Total advertising spend in USD
   - total_impressions: Number of times ads were shown
   - total_clicks: Number of clicks on ads
-  - total_conversions: Number of conversion events
-  - total_conversion_value: Revenue from conversions
   - ctr: Click-through rate (clicks / impressions)
   - cpc: Cost per click (spend / clicks)
   - cpm: Cost per thousand impressions
-  - cpa: Cost per acquisition (spend / conversions)
-  - roas: Return on ad spend (conversion_value / spend)
-  - conversion_rate: Conversions / clicks
-  Data hierarchy:
-  - Account > Campaign > Conversion Action
-  Common questions:
-  - What is our total spend by campaign?
-  - Which campaigns have the best ROAS?
-  - What is our average CPA by month?
-  - Show me spend trends over time
-  When asked about performance, default to using total_spend, total_clicks, 
-  and ctr. For conversion analysis, use total_conversions and cpa.
+
+  SECONDARY CONVERSION METRICS (only when specifically requested):
+  - total_conversions: All conversion events (includes non-optimization events)
+  - total_conversion_value: Revenue from conversions
+  - cpa: Cost per acquisition (all conversions)
+  - roas: Return on ad spend
+
+  Data hierarchy: Account > Campaign > Conversion Action
+
+  Filter by is_optimization_conversion = true to see only primary conversion events.
