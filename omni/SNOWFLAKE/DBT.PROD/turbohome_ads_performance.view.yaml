@@ -1,0 +1,127 @@
+# Reference this view as dbt_prod__turbohome_ads_performance
+catalog: DBT
+schema: PROD
+table_name: TURBOHOME_ADS_PERFORMANCE
+
+dimensions:
+  date:
+    sql: '"DATE"'
+    label: Date
+    timeframes: [ raw, date, week, month, quarter, year ]
+    convert_tz: false
+
+  platform:
+    sql: '"PLATFORM"'
+    label: Platform
+
+  account:
+    sql: '"ACCOUNT"'
+    label: Account
+
+  campaign:
+    sql: '"CAMPAIGN"'
+    label: Campaign
+
+  ad_group:
+    sql: '"AD_GROUP"'
+    label: Ad Group
+
+  # Hidden base columns
+  spend:
+    sql: '"SPEND"'
+    hidden: true
+
+  impressions:
+    sql: '"IMPRESSIONS"'
+    hidden: true
+
+  clicks:
+    sql: '"CLICKS"'
+    hidden: true
+
+  lead_score_2_value:
+    sql: '"LEAD_SCORE_2"'
+    hidden: true
+
+  lead_score_3_value:
+    sql: '"LEAD_SCORE_3"'
+    hidden: true
+
+measures:
+  count:
+    aggregate_type: count
+
+  total_spend:
+    sql: ${spend}
+    label: Total Spend
+    format: usdcurrency_2
+    aggregate_type: sum
+
+  total_impressions:
+    sql: ${impressions}
+    label: Total Impressions
+    format: number_0
+    aggregate_type: sum
+
+  total_clicks:
+    sql: ${clicks}
+    label: Total Clicks
+    format: number_0
+    aggregate_type: sum
+
+  lead_score_2:
+    sql: ${lead_score_2_value}
+    label: Lead Score 2
+    format: number_2
+    description: Lead Score | 2 conversions
+    aggregate_type: sum
+
+  lead_score_3:
+    sql: ${lead_score_3_value}
+    label: Lead Score 3
+    format: number_2
+    description: Lead Score | 3 conversions
+    aggregate_type: sum
+
+  total_leads:
+    sql: ${lead_score_2_value} + ${lead_score_3_value}
+    label: Total Leads
+    format: number_2
+    description: Lead Score 2 + Lead Score 3 combined
+    aggregate_type: sum
+
+  ctr:
+    sql: ${total_clicks} / NULLIF(${total_impressions}, 0) * 100
+    label: CTR
+    format: percent_2
+
+  cpc:
+    sql: ${total_spend} / NULLIF(${total_clicks}, 0)
+    label: CPC
+    format: usdcurrency_2
+
+  cpm:
+    sql: ${total_spend} / NULLIF(${total_impressions}, 0) * 1000
+    label: CPM
+    format: usdcurrency_2
+
+  cost_per_lead_score_2:
+    sql: ${total_spend} / NULLIF(${lead_score_2}, 0)
+    label: Cost per Lead Score 2
+    format: usdcurrency_2
+
+  cost_per_lead_score_3:
+    sql: ${total_spend} / NULLIF(${lead_score_3}, 0)
+    label: Cost per Lead Score 3
+    format: usdcurrency_2
+
+  cost_per_lead:
+    sql: ${total_spend} / NULLIF(${total_leads}, 0)
+    label: Cost per Lead
+    format: usdcurrency_2
+    description: Cost per Lead Score 2 or 3
+
+  conversion_rate:
+    sql: ${total_leads} / NULLIF(${total_clicks}, 0) * 100
+    label: Conversion Rate
+    format: percent_2
