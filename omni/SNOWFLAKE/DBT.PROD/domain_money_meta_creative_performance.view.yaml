@@ -1,7 +1,7 @@
-# Reference this view as dbt_prod__domain_money_ads_performance
+# Reference this view as dbt_prod__domain_money_meta_creative_performance
 catalog: DBT
 schema: PROD
-table_name: DOMAIN_MONEY_ADS_PERFORMANCE
+table_name: DOMAIN_MONEY_META_CREATIVES
 
 dimensions:
   date:
@@ -9,11 +9,6 @@ dimensions:
     label: Date
     timeframes: [ raw, date, week, month, quarter, year ]
     convert_tz: false
-
-  platform:
-    sql: '"PLATFORM"'
-    label: Platform
-    description: Meta or Google
 
   account:
     sql: '"ACCOUNT"'
@@ -23,9 +18,18 @@ dimensions:
     sql: '"CAMPAIGN"'
     label: Campaign
 
-  adgroup:
-    sql: '"ADGROUP"'
-    label: Ad Group / Ad Set
+  adset:
+    sql: '"ADSET"'
+    label: Ad Set
+
+  ad:
+    sql: '"AD"'
+    label: Ad / Creative
+
+  ad_id:
+    sql: '"AD_ID"'
+    label: Ad ID
+    format: ID
 
   # Hidden base columns
   spend:
@@ -69,8 +73,8 @@ measures:
   mql:
     sql: ${mql_value}
     label: MQL
-    description: Marketing Qualified Leads (schedule_total for Meta, HubSpot MQL for Google)
     format: number_2
+    description: Marketing Qualified Leads (schedule_total)
     aggregate_type: sum
 
   ctr:
@@ -97,3 +101,9 @@ measures:
     sql: ${mql} / NULLIF(${total_clicks}, 0) * 100
     label: Conversion Rate
     format: percent_2
+
+  ad_count:
+    sql: ${ad_id}
+    label: Ad Count
+    format: number_0
+    aggregate_type: count_distinct

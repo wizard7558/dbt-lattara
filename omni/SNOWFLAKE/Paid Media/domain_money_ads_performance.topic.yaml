@@ -11,17 +11,17 @@ joins: {}
 
 ai_context: |
   This topic contains Domain Money advertising data from Meta and Google.
-  
+
   PRIMARY CONVERSION METRIC:
   - mql: Marketing Qualified Leads (schedule_total for Meta, HubSpot MQL for Google)
   - cost_per_mql: Cost per MQL
-  
+
   Use mql for all conversion analysis across both platforms.
-  
+
   TRAFFIC METRICS:
   - total_spend, total_impressions, total_clicks, ctr, cpc, cpm
-  
+
   KEY DIMENSION:
   - platform: 'Meta' or 'Google'
-  
+
   Data hierarchy: Platform > Account > Campaign > Ad Group/Ad Set
