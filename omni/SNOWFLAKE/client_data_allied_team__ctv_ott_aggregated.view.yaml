@@ -1,0 +1,124 @@
+# Reference this view as client_data_allied_team__ctv_ott_aggregated
+dimensions:
+  # Compound primary key
+  primary_key:
+    sql: CONCAT(${date}, '-', ${campaign_id}, '-', ${demand_tag_id}, '-',
+      ${creative})
+    hidden: true
+    primary_key: true
+
+  date:
+    label: Date
+    timeframes: [ raw, date, week, month, quarter, year ]
+    convert_tz: false
+
+  media_type:
+    label: Media Type
+
+  paid_organic:
+    label: Paid/Organic
+
+  currency:
+    label: Currency
+
+  campaign_name:
+    label: Campaign Name
+
+  campaign_id:
+    label: Campaign ID
+
+  creative_name:
+    label: Creative Name
+
+  creative:
+    label: Creative
+
+  demand_tag_id:
+    label: Demand Tag ID
+
+  traffic_source:
+    label: Traffic Source
+
+  # Derived dimensions
+  creative_duration:
+    sql: |
+      CASE
+        WHEN ${creative} LIKE '%:15%' THEN '15 seconds'
+        WHEN ${creative} LIKE '%:30%' THEN '30 seconds'
+        WHEN ${creative} LIKE '%:60%' OR ${creative} LIKE '%1:00%' THEN '60 seconds'
+        ELSE 'Other'
+      END
+    label: Creative Duration
+    description: Video duration derived from creative naming
+
+  # Hidden base columns for aggregation
+  impressions:
+    hidden: true
+
+  impressions_alt:
+    hidden: true
+
+  completions:
+    hidden: true
+
+  reach:
+    hidden: true
+
+  unique_ips:
+    hidden: true
+
+  video_impressions:
+    hidden: true
+
+measures:
+  total_impressions:
+    sql: ${impressions}
+    label: Total Impressions
+    format: number_0
+    aggregate_type: sum
+
+  total_impressions_alt:
+    sql: ${impressions_alt}
+    label: Total Impressions (Alt)
+    format: number_0
+    aggregate_type: sum
+
+  total_completions:
+    sql: ${completions}
+    label: Total Completions
+    format: number_0
+    aggregate_type: sum
+
+  total_reach:
+    sql: ${reach}
+    label: Total Reach
+    format: number_0
+    aggregate_type: sum
+
+  total_unique_ips:
+    sql: ${unique_ips}
+    label: Total Unique IPs
+    format: number_0
+    aggregate_type: sum
+
+  total_video_impressions:
+    sql: ${video_impressions}
+    label: Total Video Impressions
+    format: number_0
+    aggregate_type: sum
+
+  vcr:
+    sql: ${total_completions} / NULLIF(${total_impressions}, 0)
+    label: VCR (Video Completion Rate)
+    format: percent_2
+    description: Video Completion Rate calculated as completions / impressions
+
+  avg_ip_reach:
+    sql: ${total_unique_ips} / NULLIF(${count}, 0)
+    label: Avg Unique IPs per Record
+    format: number_2
+
+  unique_campaigns:
+    sql: ${campaign_id}
+    label: Unique Campaigns
+    aggregate_type: count_distinct

@@ -1,0 +1,56 @@
+# Reference this view as client_data_allied_team__ctv_ott_summary
+dimensions:
+  # Compound primary key
+  primary_key:
+    sql: CONCAT(${date}, '-', ${creative}, '-', ${traffic_source})
+    hidden: true
+    primary_key: true
+
+  date:
+    label: Date
+    timeframes: [ raw, date, week, month, quarter, year ]
+    convert_tz: false
+
+  media_type:
+    label: Media Type
+
+  paid_organic:
+    label: Paid/Organic
+
+  currency:
+    label: Currency
+
+  creative:
+    label: Creative
+
+  traffic_source:
+    label: Traffic Source
+
+  # Derived dimensions
+  creative_duration:
+    sql: |
+      CASE
+        WHEN ${creative} LIKE '%:15%' THEN '15 seconds'
+        WHEN ${creative} LIKE '%:30%' THEN '30 seconds'
+        WHEN ${creative} LIKE '%:60%' OR ${creative} LIKE '%1:00%' THEN '60 seconds'
+        ELSE 'Other'
+      END
+    label: Creative Duration
+    description: Video duration derived from creative naming
+
+  # Hidden base columns for aggregation
+  reach:
+    hidden: true
+
+measures:
+  total_reach:
+    sql: ${reach}
+    label: Total Reach
+    format: number_0
+    aggregate_type: sum
+
+  avg_daily_reach:
+    sql: ${reach}
+    label: Avg Daily Reach
+    format: number_0
+    aggregate_type: average

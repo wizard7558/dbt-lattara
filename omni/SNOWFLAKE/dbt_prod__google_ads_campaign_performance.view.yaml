@@ -1,0 +1,130 @@
+# Reference this view as dbt_prod__google_ads_campaign_performance
+label: Google Ads Campaign Performance
+description: |
+  Campaign-level Google Ads performance data with conversion action breakdown.
+  100% spend coverage across all campaign types including Performance Max.
+
+dimensions:
+  date:
+    label: Date
+    timeframes: [ raw, date, week, month, quarter, year ]
+    convert_tz: false
+
+  account:
+    label: Account
+
+  customer_id:
+    hidden: true
+
+  campaign:
+    label: Campaign
+
+  campaign_id:
+    hidden: true
+
+  conversion_action_name:
+    label: Conversion Action
+
+  is_optimization_conversion:
+    label: Is Optimization Conversion
+    description: True if this conversion action is the primary optimization event
+      for the account
+
+  # Hidden base columns for aggregation
+  spend:
+    sql: '"SPEND"'
+    hidden: true
+
+  impressions:
+    sql: '"IMPRESSIONS"'
+    hidden: true
+
+  clicks:
+    sql: '"CLICKS"'
+    hidden: true
+
+  conversions:
+    sql: '"CONVERSIONS"'
+    hidden: true
+
+  conversion_value:
+    sql: '"CONVERSION_VALUE"'
+    hidden: true
+
+  opt_conv_value:
+    sql: CASE WHEN "IS_OPTIMIZATION_CONVERSION" = TRUE THEN "CONVERSIONS" ELSE 0 END
+    hidden: true
+
+measures:
+  total_spend:
+    sql: ${spend}
+    label: Spend
+    format: usdcurrency_2
+    aggregate_type: sum
+
+  total_impressions:
+    sql: ${impressions}
+    label: Impressions
+    format: number_0
+    aggregate_type: sum
+
+  total_clicks:
+    sql: ${clicks}
+    label: Clicks
+    format: number_0
+    aggregate_type: sum
+
+  total_conversions:
+    sql: ${conversions}
+    label: Conversions
+    format: number_2
+    aggregate_type: sum
+
+  optimization_conversions:
+    sql: ${opt_conv_value}
+    label: Optimization Conversions
+    format: number_2
+    description: Conversions from the primary optimization event for each account
+    aggregate_type: sum
+
+  total_conversion_value:
+    sql: ${conversion_value}
+    label: Conversion Value
+    format: usdcurrency_2
+    aggregate_type: sum
+
+  cpc:
+    sql: ${total_spend} / NULLIF(${total_clicks}, 0)
+    label: CPC
+    format: usdcurrency_2
+
+  ctr:
+    sql: ${total_clicks} / NULLIF(${total_impressions}, 0) * 100
+    label: CTR
+    format: percent_2
+
+  cpm:
+    sql: ${total_spend} / NULLIF(${total_impressions}, 0) * 1000
+    label: CPM
+    format: usdcurrency_2
+
+  cpa:
+    sql: ${total_spend} / NULLIF(${total_conversions}, 0)
+    label: CPA
+    format: usdcurrency_2
+
+  cost_per_optimization_conversion:
+    sql: ${total_spend} / NULLIF(${optimization_conversions}, 0)
+    label: Cost per Optimization Conversion
+    format: usdcurrency_2
+    description: Cost per primary optimization conversion
+
+  roas:
+    sql: ${total_conversion_value} / NULLIF(${total_spend}, 0)
+    label: ROAS
+    format: number_2
+
+  conversion_rate:
+    sql: ${total_conversions} / NULLIF(${total_clicks}, 0) * 100
+    label: Conversion Rate
+    format: percent_2

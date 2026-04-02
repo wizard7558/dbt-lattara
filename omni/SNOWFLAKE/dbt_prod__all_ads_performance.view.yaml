@@ -1,0 +1,162 @@
+# Reference this view as dbt_prod__all_ads_performance
+dimensions:
+  # Compound primary key
+  primary_key:
+    sql: CONCAT(${date}, '-', ${platform}, '-', ${campaign}, '-',
+      COALESCE(${ad_group}, 'none'), '-', COALESCE(${conversion_name}, 'none'))
+    hidden: true
+    primary_key: true
+
+  date:
+    label: Date
+    timeframes: [ raw, date, week, month, quarter, year ]
+    convert_tz: false
+
+  platform:
+    label: Platform
+    description: Advertising platform (Facebook, Google)
+
+  account:
+    label: Account
+    description: Ad account name
+
+  campaign:
+    label: Campaign
+    description: Campaign name
+
+  ad_group:
+    label: Ad Group / Ad Set
+    description: Ad Group (Google) or Ad Set (Facebook)
+
+  conversion_name:
+    label: Conversion Name
+    description: Name of the conversion action
+
+  is_optimization_conversion:
+    sql: '"IS_OPTIMIZATION_CONVERSION"'
+    label: Is Optimization Conversion
+    description: True if this conversion action is the primary optimization event
+      for the account
+
+  # Hidden base columns for aggregation
+  spend:
+    hidden: true
+
+  impressions:
+    hidden: true
+
+  clicks:
+    hidden: true
+
+  conversions:
+    hidden: true
+
+  conversion_value:
+    hidden: true
+
+  opt_conv_value:
+    sql: CASE WHEN "IS_OPTIMIZATION_CONVERSION" = TRUE THEN "CONVERSIONS" ELSE 0 END
+    hidden: true
+
+measures:
+  count:
+    description: Count of records
+    aggregate_type: count
+
+  total_spend:
+    sql: ${spend}
+    label: Total Spend
+    format: usdcurrency_2
+    description: Total advertising spend across all platforms
+    aggregate_type: sum
+
+  total_impressions:
+    sql: ${impressions}
+    label: Total Impressions
+    format: number_0
+    description: Total number of ad impressions
+    aggregate_type: sum
+
+  total_clicks:
+    sql: ${clicks}
+    label: Total Clicks
+    format: number_0
+    description: Total number of ad clicks
+    aggregate_type: sum
+
+  total_conversions:
+    sql: ${conversions}
+    label: Total Conversions
+    format: number_2
+    description: Total number of conversions
+    aggregate_type: sum
+
+  optimization_conversions:
+    sql: ${opt_conv_value}
+    label: Optimization Conversions
+    format: number_2
+    description: Conversions from the primary optimization event for each account
+    aggregate_type: sum
+
+  total_conversion_value:
+    sql: ${conversion_value}
+    label: Total Conversion Value
+    format: usdcurrency_2
+    description: Total conversion value (Google only)
+    aggregate_type: sum
+
+  ctr:
+    sql: ${total_clicks} / NULLIF(${total_impressions}, 0) * 100
+    label: CTR
+    format: percent_2
+    description: Click-through rate (clicks / impressions)
+
+  cpc:
+    sql: ${total_spend} / NULLIF(${total_clicks}, 0)
+    label: CPC
+    format: usdcurrency_2
+    description: Cost per click (spend / clicks)
+
+  cpm:
+    sql: ${total_spend} / NULLIF(${total_impressions}, 0) * 1000
+    label: CPM
+    format: usdcurrency_2
+    description: Cost per thousand impressions
+
+  cpa:
+    sql: ${total_spend} / NULLIF(${total_conversions}, 0)
+    label: CPA
+    format: usdcurrency_2
+    description: Cost per acquisition (spend / conversions)
+
+  cost_per_optimization_conversion:
+    sql: ${total_spend} / NULLIF(${optimization_conversions}, 0)
+    label: Cost per Optimization Conversion
+    format: usdcurrency_2
+    description: Cost per primary optimization conversion
+
+  roas:
+    sql: ${total_conversion_value} / NULLIF(${total_spend}, 0)
+    label: ROAS
+    format: number_2
+    description: Return on ad spend (Google data only)
+
+  conversion_rate:
+    sql: ${total_conversions} / NULLIF(${total_clicks}, 0) * 100
+    label: Conversion Rate
+    format: percent_2
+    description: Conversion rate (conversions / clicks)
+
+  campaign_count:
+    sql: ${campaign}
+    label: Campaign Count
+    format: number_0
+    description: Count of unique campaigns
+    aggregate_type: count_distinct
+
+  ad_group_count:
+    sql: ${ad_group}
+    label: Ad Group Count
+    format: number_0
+    description: Count of unique ad groups / ad sets
+    aggregate_type: count_distinct
